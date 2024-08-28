@@ -621,11 +621,11 @@ To facilitate the discovery of API endpoints and policies, we propose using DNS 
 1. **Policy Endpoint**  
    1. **Field Name**: uim-policy-endpoint  
    2. **Description**: URL endpoint where AI agents can retrieve the ODRL policy.  
-   3. **Example**: uim-policy-endpoint=https://example.com/policy/12345  
+   3. **Example**: uim-policy-endpoint=[https://example.com/policy/12345](https://example.com/policy/12345)  
 2. **API Discovery Endpoint**  
    1. **Field Name**: uim-api-discovery  
    2. **Description**: URL endpoint where AI agents can retrieve the web service intents catalog.  
-   3. **Example**: uim-api-discovery=https://example.com/api/discovery  
+   3. **Example**: uim-api-discovery=[https://example.com/api/discovery](https://example.com/api/discovery)
 3. **Authentication Protocol**  
    1. **Field Name**: uim-auth-protocol  
    2. **Description**: Authentication method required to interact with the web service.  
