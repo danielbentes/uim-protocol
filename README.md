@@ -1,6 +1,24 @@
 # UIM Protocol: A Standardized Approach to AI-Agent and Web Service Interactions
 
-## Abstract
+## TLDR
+
+The [API specification section](unified-intent-mediator-api-specification.md) of the Unified Intent Mediator (UIM) protocol details the comprehensive framework proposal for seamless, secure, and scalable interactions between AI agents and web services. This section outlines how the UIM protocol standardizes key processes, including service registration, intent management, and execution, to ensure consistent and reliable communication.
+
+Key innovations in this specification include:
+
+- **Policy Adherence Token (PAT) System**: Introduces a digitally signed token that simplifies policy enforcement by encapsulating permissions, obligations, and billing information. This system not only streamlines compliance checks but also automates billing, making interactions more efficient and reducing administrative overhead.
+  
+- **Leveraging DNS TXT Records and `agents.txt` for Discovery**: Provides a unique approach to API endpoint discovery by utilizing DNS TXT records and an `agents.txt` file. This method allows AI agents to quickly find API endpoints, understand rate limits, verify terms, and authenticate securely, all using familiar internet protocols.
+  
+- **Integration with Open Digital Rights Language (ODRL)**: The UIM protocol integrates ODRL to manage permissions, prohibitions, and obligations, ensuring that AI agents and web services operate under clear and enforceable rules. This integration promotes trust and transparency in interactions while allowing for automated enforcement of complex usage policies.
+
+- **API endpoints** for service registration, intent management, and execution, enabling AI agents to discover, understand, and interact with web services in a standardized and secure manner. These endpoints are designed to be RESTful, scalable, and easy to integrate with existing systems.
+
+## TLDR for the Concept Section
+
+The concept section of the white paper explains the foundational elements of the UIM protocol, focusing on key concepts like “intents,” “metadata,” and the “execute method.” It highlights the protocol’s role in enabling seamless and efficient interactions between AI agents and web services, resolving issues like inconsistent data extraction and high latency. The section also discusses the monetization opportunities that the UIM protocol creates for web services by providing structured, discoverable, and executable intents.
+
+## Concept Abstract
 
 The Unified Intent Mediator (UIM) protocol addresses the critical challenge of standardizing interactions between AI agents and web services. By providing a consistent, secure, and scalable interface, UIM replaces inefficient methods such as web scraping and simulated user actions. This protocol enhances reliability, improves efficiency, and simplifies the development process for AI-driven applications. This white paper outlines the UIM protocol’s key features, implementation details, and future potential, positioning it as a foundational technology for the next generation of AI-agent and web service integrations.
 
