@@ -1052,3 +1052,72 @@ Below is an appendix dedicated to standard error codes, their meanings, and reco
 * **Error Logging and Monitoring**: Services implementing the UIM protocol should log all errors with sufficient detail (e.g., timestamps, request details, stack traces for server-side errors) to facilitate troubleshooting.  
 * **User-Friendly Messages**: When errors are related to user actions, ensure that messages are clear and actionable, helping users correct their input or understand the issue.  
 * **Deprecation Warnings**: When deprecating an intent or feature, provide warnings in the response to guide users towards alternatives before the feature is removed in a future release.
+
+## 11. Usage Scenarios
+
+Let's focus on how an AI agent framework would specifically use the **Discovery and Execution Endpoints** outlined in the UIM API specification, following OpenAI's function-calling paradigm.
+
+### 11.1 Step-by-Step Outline: Using UIM API Endpoints as Tools for AI Agents
+
+To integrate the UIM protocol with OpenAI's function-calling approach, the AI agent framework would treat each of the UIM’s discovery and execution endpoints as distinct tools, each designed for specific actions. Here’s how an AI agent might systematically utilize these endpoints:
+
+#### 11.1.1 **Discovering Available Actions (Intents)**
+
+Before performing any action, an AI agent needs to know which operations are available and what parameters they require. 
+
+* **Search Intents (`/api/intents/search`, Method: GET):**
+  * **Purpose**: This endpoint allows the AI agent to discover available intents (actions) across registered web services.
+  * **How It Works**: The AI agent could use this endpoint to search for intents based on criteria such as keywords, service names, categories, or even natural language queries. This is akin to calling a function with search parameters to identify which operations are available.
+  * **Example Use Case**: If a user asks, “Find the best laptop deals,” the AI agent would call this endpoint with search terms like “product search” or “e-commerce” to find relevant intents across various web services that allow product searches.
+
+#### 11.1.2 **Fetching Detailed Information About an Intent**
+
+Once an AI agent identifies a potentially useful intent, it needs to understand what specific inputs are required and what outputs to expect.
+
+* **Retrieve Intent Details (`/api/intents/{intent_id}`, Method: GET):**
+  * **Purpose**: This endpoint provides detailed information about a specific intent, such as required parameters, types, and any constraints.
+  * **How It Works**: After discovering a relevant intent (e.g., `SearchProducts`), the AI agent would call this endpoint to retrieve details on the parameters needed (like `query`, `category`, `price_range`).
+  * **Example Use Case**: Following the previous example, after discovering the `SearchProducts` intent, the AI agent retrieves its details to understand how to format a search query (e.g., specifying "laptops" in the `query` parameter, "electronics" in `category`).
+
+#### 11.1.3 **Executing the Discovered Intent**
+
+With the necessary intent identified and detailed information gathered, the AI agent is ready to execute the action.
+
+* **Execute Intent (`/api/intents/execute`, Method: POST):**
+  * **Purpose**: This is the primary endpoint for executing actions on a web service. The AI agent uses this endpoint to perform the desired operation by providing the intent identifier and the required parameters.
+  * **How It Works**: The AI agent calls this endpoint, passing the unique identifier of the intent (e.g., `ecommercePlatform:SearchProducts:v1`) and the appropriate parameters (like `query="laptops"`, `category="electronics"`). The endpoint processes the request and returns the results, which could include product listings, prices, or other data.
+  * **Example Use Case**: Continuing the example, the AI agent executes the `SearchProducts` intent to fetch a list of laptops within a specified price range, sorted by popularity. The results are then processed and presented to the user.
+
+#### 11.1.4 **Ensuring Compliance and Security**
+
+The AI agent must comply with usage policies and ensure secure interactions while executing intents.
+
+* **Policy Adherence Token (PAT) System:**
+  * **Purpose**: To securely interact with web services, the AI agent must obtain a Policy Adherence Token (PAT) that encapsulates agreed-upon permissions, rate limits, and billing information.
+  * **How It Works**: The AI agent requests a PAT from the web service’s policy endpoint, adhering to the defined policies. The PAT is included in subsequent requests to authenticate the AI agent and ensure compliance.
+  * **Example Use Case**: Before executing the `SearchProducts` intent, the AI agent first retrieves a PAT to ensure it is authorized to perform the action and to handle any associated billing or rate limits automatically.
+
+#### 11.1.5 **Utilizing DNS TXT Records and `agents.txt` for Discovery**
+
+To facilitate efficient and secure discovery of service endpoints and policies, the AI agent uses DNS-based mechanisms.
+
+* **DNS TXT Records and `agents.txt` Files:**
+  * **Purpose**: To discover API endpoints, policies, and authentication details without extensive manual configuration.
+  * **How It Works**: The AI agent queries DNS TXT records or retrieves the `agents.txt` file from the service’s domain to obtain information such as the policy endpoint, rate limits, available intents, and authentication requirements.
+  * **Example Use Case**: Upon receiving a request to “find the best deals,” the AI agent looks up the `agents.txt` file or DNS TXT records to discover available e-commerce services and their specific intents for searching products.
+
+### 11.2 Framework Application in OpenAI’s Tool Usage Context
+
+Within OpenAI's function-calling paradigm, these endpoints would be treated as individual tools the AI agent can call dynamically:
+
+1. **Discovery Phase**:
+   * The AI agent calls `Search Intents` to find potential actions related to a user request.
+   * The agent then uses `Retrieve Intent Details` to understand the parameters needed for the desired action.
+
+2. **Execution Phase**:
+   * The AI calls `Execute Intent` with the appropriate parameters to perform the action and handle the output, similar to invoking a function to get results based on a user's query.
+
+3. **Compliance and Security Phase**:
+   * The agent secures a Policy Adherence Token (PAT) before executing intents, ensuring secure and compliant interactions.
+
+By leveraging these endpoints as callable functions, the AI agent can effectively perform complex tasks across multiple web services, ensuring secure, scalable, and compliant operations.

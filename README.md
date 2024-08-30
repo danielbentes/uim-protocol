@@ -465,6 +465,108 @@ The adoption of the Unified Intent Mediator (UIM) protocol promises to revolutio
 
 In conclusion, the UIM protocol is not just a technical solution—it is a strategic enabler that will unlock new possibilities in AI-driven automation and web service integration. Its successful implementation will depend on the collaborative efforts of developers, service providers, and industry leaders, all working together to build a more connected and intelligent future.
 
+## **System Architecture of the UIM Protocol: A Detailed Evaluation**
+
+Let's dive deeply into the Unified Intent Mediator (UIM) protocol and evaluate its system architecture based on the two proposed approaches:
+
+1. **Man-in-the-Middle Approach (Centralized Repository)**
+2. **Decentralized Approach (AI Agents Crawling Web Services)**
+
+This evaluation will highlight the architectural differences, benefits, and potential challenges of each approach, providing a comprehensive understanding of how each system operates.
+
+![Main architecture](images/main-architecture.png)
+
+### **1. Man-in-the-Middle Approach: Centralized Repository**
+
+**Overview:**
+In the centralized approach, a central system acts as an intermediary (man-in-the-middle) between AI agents and web services. This central repository collects, manages, and provides access to intent information registered by web services. AI agents interact with this repository to discover available intents and execute actions on web services via standardized endpoints.
+
+**Key Architectural Components:**
+
+- **Central Repository**: The core of this architecture, where web services register their intents. This repository contains metadata, parameters, and execution details for each intent.
+- **Service Management Endpoints**: Web services use these endpoints to register, update, and manage their intents in the repository.
+- **Discovery Endpoints**: AI agents use these endpoints to search for available intents, fetch detailed information, and identify which actions they can execute.
+- **Execution Endpoint**: Facilitates the actual execution of an action by forwarding requests from AI agents to the appropriate web service based on registered intents.
+- **Policy Adherence and Security Layer**: Manages authentication, authorization, and rate limiting, often using the Policy Adherence Token (PAT) system. It ensures compliance and secure interaction between AI agents and web services.
+
+![Centralized repository](images/centralized-repo.png)
+
+**Architecture Flow:**
+
+1. **Web Service Registration**: Web services register their intents with the central repository using service management endpoints.
+2. **Intent Discovery**: AI agents query the discovery endpoints to identify relevant intents based on user requests.
+3. **Intent Details Retrieval**: Once an intent is identified, the agent fetches detailed execution parameters from the repository.
+4. **Execution**: The AI agent submits a request to the execution endpoint, which forwards it to the appropriate web service.
+5. **Response Handling**: The results are returned to the AI agent, which then processes and presents the output to the user.
+
+**Benefits:**
+
+- **Centralized Management**: A single point of management for all intents simplifies oversight, updates, and maintenance.
+- **Consistent Data Structure**: Standardized intent formats and metadata facilitate easier integration and use by AI agents.
+- **Enhanced Security**: Centralized control over access, authentication, and rate limiting helps enforce security and compliance measures.
+- **Reliable Monetization**: A clear, controlled pathway for monetization, allowing the central system to manage payments and enforce billing policies.
+
+**Challenges:**
+
+- **Scalability**: As the number of registered web services and AI agents grows, the central system must handle significant data volumes and high transaction loads.
+- **Single Point of Failure**: Any issues with the central repository can disrupt the entire system, impacting both AI agents and web services.
+- **Data Privacy Concerns**: Central storage of intent information may raise concerns about data ownership and privacy for web services.
+
+#### **2. Decentralized Approach: AI Agents Crawling Web Services**
+
+**Overview:**
+In the decentralized approach, AI agents themselves are responsible for discovering and collecting intent information directly from web services. This is achieved through crawling mechanisms that utilize DNS TXT records and `agents.txt` files hosted by web services. The intent information is stored locally by AI agents, allowing them to directly interact with web services without a centralized intermediary.
+
+**Key Architectural Components:**
+
+- **DNS TXT Records and `agents.txt` Files**: These files are hosted by web services to provide intent metadata, execution details, policies, rate limits, and authentication methods. They act as a self-descriptive interface for AI agents.
+- **Crawling Mechanism**: AI agents periodically or on-demand crawl these resources to collect and update intent information from various web services.
+- **Local Intent Repository**: Each AI agent maintains its own repository of intent information, allowing it to execute actions based on the data collected from web services.
+- **Execution Endpoint**: AI agents directly call execution endpoints on web services to perform actions, authenticated using data collected during crawling (e.g., PATs, OAuth tokens).
+- **Policy Compliance and Security Layer**: Similar to the centralized model, but managed locally by each AI agent using the information gathered from `agents.txt` and DNS records.
+
+![AI-Agent architecture](images/ai-agent-architecture.png)
+
+**Architecture Flow:**
+
+1. **Crawling and Discovery**: AI agents crawl web services to gather available intents using DNS TXT records and `agents.txt` files.
+2. **Intent Data Storage**: The gathered data is stored locally within the AI agent’s repository, creating a personalized database of actions.
+3. **Execution**: When a user request matches a stored intent, the AI agent directly interacts with the corresponding web service to execute the action.
+4. **Compliance and Security**: The AI agent adheres to rate limits, billing requirements, and authentication methods as outlined in the collected intent data.
+5. **Response Handling**: Results from the execution are processed and returned to the user.
+
+**Benefits:**
+
+- **Scalability**: Decentralization avoids the bottlenecks of a central system, allowing scalability across millions of AI agents and web services.
+- **No Single Point of Failure**: Since intent information is distributed, the system remains robust even if some agents or services encounter issues.
+- **Privacy and Ownership**: Web services maintain control over their intent data, reducing concerns about data privacy and centralization.
+- **Flexible and Adaptable**: AI agents can quickly adapt to new services or changes in existing ones without waiting for updates in a central repository.
+
+**Challenges:**
+
+- **Inconsistent Data**: Without centralized control, there may be variations in how web services present their intent data, leading to potential inconsistencies.
+- **Higher Complexity for AI Agents**: Each agent must handle crawling, data parsing, security, and compliance on its own, increasing the complexity of individual agents.
+- **Maintenance Overhead**: AI agents need to frequently crawl and update intent information to stay current, which can be resource-intensive.
+
+### **Comparative Evaluation of Both Approaches**
+
+1. **Centralized Repository (Man-in-the-Middle)**
+   - **Pros**: Streamlined management, consistent data structure, enhanced security, clear monetization strategy.
+   - **Cons**: Scalability issues, single point of failure, potential data privacy concerns.
+
+2. **Decentralized Crawling by AI Agents**
+   - **Pros**: Scalability, robust against failures, privacy-friendly, adaptable to changes.
+   - **Cons**: Potential inconsistencies, complex management for AI agents, resource-intensive maintenance.
+
+### **Strategic Recommendations:**
+
+- **Use Centralized Approach**: If the primary goal is to maintain strict oversight, enforce security protocols, and ensure a standardized user experience across all AI agents and web services.
+- **Adopt Decentralized Approach**: If scalability, resilience, and data privacy are paramount, particularly in environments where rapid adaptation and autonomy are critical.
+
+![Architecture comparison](images/solution-comparison.png)
+
+By understanding these architectural nuances, stakeholders can better align the UIM protocol’s deployment strategy with their operational needs, ensuring efficient and effective integration between AI agents and web services.
+
 ## API Specification
 
 Read the proposed specification here: [Unified Intent Mediator API](unified-intent-mediator-api-specification.md)
