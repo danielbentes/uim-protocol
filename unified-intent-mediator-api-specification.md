@@ -1106,18 +1106,231 @@ To facilitate efficient and secure discovery of service endpoints and policies, 
   * **How It Works**: The AI agent queries DNS TXT records or retrieves the `agents.txt` file from the service’s domain to obtain information such as the policy endpoint, rate limits, available intents, and authentication requirements.
   * **Example Use Case**: Upon receiving a request to “find the best deals,” the AI agent looks up the `agents.txt` file or DNS TXT records to discover available e-commerce services and their specific intents for searching products.
 
-### 11.2 Framework Application in OpenAI’s Tool Usage Context
+## **12. Step-by-Step Implementation of the Decentralized Crawling by AI Agents Approach**
 
-Within OpenAI's function-calling paradigm, these endpoints would be treated as individual tools the AI agent can call dynamically:
+Implementing the "Decentralized Crawling by AI Agents" approach enables AI agents to autonomously discover, collect, store, and utilize intent information directly from web services. This approach eliminates the need for a centralized repository, allowing AI agents to operate independently and efficiently in discovering and executing intents. Below is a detailed step-by-step guide on how an AI agent would implement this approach.
 
-1. **Discovery Phase**:
-   * The AI agent calls `Search Intents` to find potential actions related to a user request.
-   * The agent then uses `Retrieve Intent Details` to understand the parameters needed for the desired action.
+### **12.1 Discovery Phase: Identifying Available Web Services and Their Endpoints**
 
-2. **Execution Phase**:
-   * The AI calls `Execute Intent` with the appropriate parameters to perform the action and handle the output, similar to invoking a function to get results based on a user's query.
+**Objective:** The AI agent needs to autonomously discover which web services are available and how to access their intent information. This is achieved through crawling DNS TXT records and retrieving `agents.txt` files.
 
-3. **Compliance and Security Phase**:
-   * The agent secures a Policy Adherence Token (PAT) before executing intents, ensuring secure and compliant interactions.
+#### **Step 1.1: Query DNS TXT Records**
 
-By leveraging these endpoints as callable functions, the AI agent can effectively perform complex tasks across multiple web services, ensuring secure, scalable, and compliant operations.
+* **Action:** The AI agent queries DNS TXT records for potential web services domains.
+* **Purpose:** To identify key information such as the URL of the discovery endpoint (`UIM-API-Discovery`) and the policy endpoint (`UIM-Policy-Endpoint`), which provide further guidance on accessing intent data.
+* **Technical Implementation:**
+  * Use DNS query libraries (e.g., Python’s `dnspython`) to extract TXT records from the domain of interest.
+  * Example Code:
+
+    ```python
+    import dns.resolver
+
+    def query_dns_txt(domain):
+        try:
+            answers = dns.resolver.resolve(domain, 'TXT')
+            for rdata in answers:
+                print(rdata.to_text())
+        except Exception as e:
+            print(f"DNS query failed: {e}")
+
+    query_dns_txt('example.com')
+    ```
+
+*-* **Expected Output:** The DNS TXT record should contain structured information such as:
+  
+  ```txt
+  uim-api-discovery=https://api.example.com/discovery
+  uim-policy-endpoint=https://api.example.com/policy/12345
+  uim-auth-protocol=OAuth2.0
+  ```
+
+#### **Step 1.2: Retrieve the `agents.txt` File**
+
+* **Action:** The AI agent retrieves the `agents.txt` file from the root of the web service’s domain (e.g., `https://example.com/agents.txt`).
+* **Purpose:** To gather information about available APIs, supported intents, compliance requirements, and other metadata that facilitate further crawling and execution.
+* **Technical Implementation:**
+  * Use HTTP requests (e.g., `requests` library in Python) to fetch the `agents.txt` file.
+  * Example Code:
+
+    ```python
+    import requests
+
+    def fetch_agents_txt(url):
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                print(response.text)
+            else:
+                print(f"Failed to retrieve agents.txt: {response.status_code}")
+        except Exception as e:
+            print(f"Error fetching agents.txt: {e}")
+
+    fetch_agents_txt('https://example.com/agents.txt')
+    ```
+
+*-* **Expected Output:** Contents of `agents.txt` such as:
+
+  ```txt
+  User-agent: *
+  UIM-Policy-Endpoint: https://api.example.com/policy/12345
+  UIM-API-Discovery: https://api.example.com/discovery
+  UIM-Auth-Protocol: OAuth2.0
+  UIM-Rate-Limit: 1000/hour
+  ```
+
+### **12.2 Using the Discovery Endpoint to Collect Intent Information**
+
+**Objective:** After identifying the discovery endpoint from `agents.txt` or DNS TXT records, the AI agent queries this endpoint to retrieve the list of available intents and their details.
+
+#### **Step 2.1: Query the Discovery Endpoint**
+
+* **Action:** Send a GET request to the discovery endpoint (`UIM-API-Discovery`) to list available intents.
+* **Purpose:** To collect comprehensive details about each supported intent, including metadata, required parameters, rate limits, and execution URLs.
+* **Technical Implementation:**
+  * Use a secure HTTP GET request to query the discovery endpoint, often with an Authorization header if required by the service.
+  * Example Code:
+
+    ```python
+    def query_discovery_endpoint(discovery_url, pat_token=None):
+        headers = {'Authorization': f'Bearer {pat_token}'} if pat_token else {}
+        try:
+            response = requests.get(discovery_url, headers=headers)
+            if response.status_code == 200:
+                intents = response.json().get('intents', [])
+                for intent in intents:
+                    print(intent)
+                return intents
+            else:
+                print(f"Discovery failed: {response.status_code}")
+        except Exception as e:
+            print(f"Error querying discovery endpoint: {e}")
+
+    intents = query_discovery_endpoint('https://api.example.com/discovery', pat_token='eyJhbGciOi...')
+    ```
+
+* **Expected Output:** A structured list of intents, each with details on how to execute, such as:
+
+  ```json
+  {
+    "intents": [
+      {
+        "intent_id": "ecommercePlatform:SearchProducts:v1",
+        "description": "Search for products based on given criteria",
+        "parameters": {
+          "query": { "type": "string", "required": true },
+          "category": { "type": "string", "required": false },
+          "price_range": { "type": "string", "required": false },
+          "sort_by": { "type": "string", "required": false }
+        },
+        "endpoint": "https://api.ecommerce.com/products/search",
+        "rate_limit": "1000/hour",
+        "price": "0.01 USD"
+      }
+    ]
+  }
+  ```
+
+### **12.3 Parsing and Storing Intent Information Locally**
+
+**Objective:** Store the retrieved intent data in a structured, accessible format within the AI agent’s internal repository.
+
+#### **Step 3.1: Parse and Format Intent Data**
+
+* **Action:** Extract relevant details from the discovery response, including intent names, parameters, and execution endpoints.
+* **Purpose:** To make the intent data easily retrievable and usable during execution phases.
+* **Technical Implementation:**
+  * Convert the JSON response into a structured format, such as a local database or in-memory storage, for efficient access.
+  * Example Code:
+
+    ```python
+    import json
+
+    def store_intents(intents):
+        with open('intents.json', 'w') as f:
+            json.dump({"intents": intents}, f)
+
+    store_intents(intents)
+    ```
+
+#### **Step 3.2: Manage Local Repository for Quick Access**
+
+* **Action:** Maintain a local repository that stores updated intent data and provides quick access during runtime.
+* **Purpose:** To ensure that the AI agent always has up-to-date information on what actions it can perform.
+* **Implementation Tips:**
+  * Use lightweight databases like SQLite or structured JSON files for easy intent management and updates.
+
+### **12.4 Obtain Policy Adherence Token (PAT)**
+
+**Objective:** Ensure compliance and secure execution by obtaining a PAT from the policy endpoint before executing any intents.
+
+#### **Step 4.1: Request PAT**
+
+* **Action:** Send a POST request to the policy endpoint (`UIM-Policy-Endpoint`) to obtain a PAT.
+* **Technical Implementation:**
+  * Use the authentication protocol specified (e.g., OAuth2.0) to secure the PAT request.
+  * Example Code:
+
+    ```python
+    def request_pat(policy_url):
+        try:
+            response = requests.post(policy_url, json={"request": "PAT issuance"})
+            if response.status_code == 200:
+                pat = response.json().get('pat')
+                print(f"PAT obtained: {pat}")
+                return pat
+            else:
+                print(f"PAT request failed: {response.status_code}")
+        except Exception as e:
+            print(f"Error obtaining PAT: {e}")
+
+    pat_token = request_pat('https://api.example.com/policy/12345')
+    ```
+
+### **12.5 Intent Execution Phase: Perform Actions Based on User Input**
+
+**Objective:** Execute the collected intents based on user input, utilizing the stored intent information.
+
+#### **Step 5.1: Match User Request to Available Intents**
+
+* **Action:** Search the local intent repository for intents matching the user’s request criteria.
+* **Purpose:** To select the correct action that aligns with the user’s needs and available intents.
+* **Example Implementation:**
+  * Use tool calling features of an LLM, pattern matching or simple lookups to identify relevant intents based on user input keywords.
+
+#### **Step 5.2: Execute the Selected Intent**
+
+* **Action:** Send a POST request to the execution endpoint of the chosen intent, including required parameters and the PAT for compliance.
+* **Example Code:**
+
+  ```python
+  def execute_intent(intent, pat_token, parameters):
+      headers = {'Authorization': f'Bearer {pat_token}'}
+      try:
+          response = requests.post(intent['endpoint'], json=parameters, headers=headers)
+          if response.status_code == 200:
+              print(f"Execution successful: {response.json()}")
+          else:
+              print(f"Execution failed: {response.status_code}")
+      except Exception as e:
+          print(f"Error executing intent: {e}")
+
+  execute_intent(
+      intent=intents[0],
+      pat_token=pat_token,
+      parameters={"query": "laptops", "category": "electronics", "price_range": "0-1000"}
+  )
+  ```
+
+### **12.6 Compliance, Security, and Maintenance**
+
+**Objective:** Ensure ongoing compliance, security, and adaptability by periodically updating stored intent information and managing rate limits.
+
+#### **Step 6.1: Monitor and Enforce Rate Limits**
+
+* **Action:** Implement checks to ensure rate limits are not exceeded based on stored intent data.
+* **Purpose:** To maintain compliance and avoid service disruptions.
+
+#### **Step 6.2: Periodic Refresh of Intent Data**
+
+* **Action:** Regularly crawl DNS TXT records and `agents.txt` files to refresh intent data.
+* **Purpose:** Ensures that the AI agent operates with the most current information.
