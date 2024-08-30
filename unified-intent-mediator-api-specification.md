@@ -1261,30 +1261,44 @@ Implementing the "Decentralized Crawling by AI Agents" approach enables AI agent
 
 ### **12.4 Obtain Policy Adherence Token (PAT)**
 
-**Objective:** Ensure compliance and secure execution by obtaining a PAT from the policy endpoint before executing any intents.
+**Objective:** Securely obtain a PAT to ensure that the AI agent’s execution requests are authorized, compliant, and properly billed.
 
-#### **Step 4.1: Request PAT**
+#### **Step 4.1: Request PAT from the Policy Endpoint**
 
 * **Action:** Send a POST request to the policy endpoint (`UIM-Policy-Endpoint`) to obtain a PAT.
+* **Purpose:** The PAT is issued to encapsulate permissions, obligations, rate limits, and billing information for executing intents.
 * **Technical Implementation:**
-  * Use the authentication protocol specified (e.g., OAuth2.0) to secure the PAT request.
+  * The PAT request typically involves signing the request payload with a private key or using OAuth2.0 to authenticate.
+  * The AI agent must specify the actions it intends to perform, ensuring the token aligns with allowed actions and conditions.
   * Example Code:
 
     ```python
-    def request_pat(policy_url):
-        try:
-            response = requests.post(policy_url, json={"request": "PAT issuance"})
-            if response.status_code == 200:
-                pat = response.json().get('pat')
-                print(f"PAT obtained: {pat}")
-                return pat
-            else:
-                print(f"PAT request failed: {response.status_code}")
-        except Exception as e:
-            print(f"Error obtaining PAT: {e}")
-
-    pat_token = request_pat('https://api.example.com/policy/12345')
+    def request_pat(policy_url, intent_ids, client_credentials):
+      payload = {
+          "intents": intent_ids,
+          "usage_constraints": {
+              "rate_limit": "1000/hour"
+          }
+      }
+      headers = {'Authorization': f'Bearer {client_credentials}'}
+      try:
+          response = requests.post(policy_url, json=payload, headers=headers)
+          if response.status_code == 200:
+              pat = response.json().get('pat')
+              print(f"PAT obtained: {pat}")
+              return pat
+          else:
+              print(f"PAT request failed: {response.status_code}")
+      except Exception as e:
+          print(f"Error obtaining PAT: {e}")
+    
+    pat_token = request_pat(
+    'https://api.example.com/policy',
+    intent_ids=['ecommercePlatform:SearchProducts:v1'],
+    client_credentials='<client_credentials_token>')
     ```
+    
+* **Expected Output:** A PAT that authorizes the AI agent to execute specific intents under defined constraints, ensuring compliance with service policies.
 
 ### **12.5 Intent Execution Phase: Perform Actions Based on User Input**
 
