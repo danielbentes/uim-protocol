@@ -2,13 +2,13 @@
 
 ## TLDR
 
-The [API specification section](unified-intent-mediator-api-specification.md) of the Unified Intent Mediator (UIM) protocol details the comprehensive framework proposal for seamless, secure, and scalable interactions between AI agents and web services. This section outlines how the UIM protocol standardizes key processes, including service registration, intent management, and execution, to ensure consistent and reliable communication.
+The [API specification section](unified-intent-mediator-api-specification.md) of the Unified Intent Mediator (UIM) protocol details the comprehensive framework proposal for seamless, secure, and scalable interactions between AI agents and web services. This section outlines how the UIM protocol standardizes key processes, including service registration, intent management, and execution, to ensure consistent and reliable interaction between AI agents and web services. It also highlights the key innovations that make the UIM protocol a catalyst for the evolution of AI-agent and web service interactions.
 
 Key innovations in this specification include:
 
 - **Policy Adherence Token (PAT) System**: Introduces a digitally signed token that simplifies policy enforcement by encapsulating permissions, obligations, and billing information. This system not only streamlines compliance checks but also automates billing, making interactions more efficient and reducing administrative overhead.
   
-- **Leveraging DNS TXT Records and `agents.txt` for Discovery**: Provides a unique approach to API endpoint discovery by utilizing DNS TXT records and an `agents.txt` file. This method allows AI agents to quickly find API endpoints, understand rate limits, verify terms, and authenticate securely, all using familiar internet protocols.
+- **Leveraging DNS TXT Records and/or `agents.txt` for Discovery**: Provides a unique approach to API endpoint discovery by utilizing DNS TXT records and an `agents.txt` file. This method allows AI agents to quickly find API endpoints, understand rate limits, verify terms, and authenticate securely, all using familiar internet protocols.
   
 - **Integration with Open Digital Rights Language (ODRL)**: The UIM protocol integrates ODRL to manage permissions, prohibitions, and obligations, ensuring that AI agents and web services operate under clear and enforceable rules. This integration promotes trust and transparency in interactions while allowing for automated enforcement of complex usage policies.
 
@@ -16,7 +16,7 @@ Key innovations in this specification include:
 
 ## TLDR for the Concept Section
 
-The concept section of the white paper explains the foundational elements of the UIM protocol, focusing on key concepts like “intents,” “metadata,” and the “execute method.” It highlights the protocol’s role in enabling seamless and efficient interactions between AI agents and web services, resolving issues like inconsistent data extraction and high latency. The section also discusses the monetization opportunities that the UIM protocol creates for web services by providing structured, discoverable, and executable intents.
+The concept section below explains the foundational elements of the UIM protocol, focusing on key concepts like “intents,” “metadata,” and the “execute method.” It highlights the protocol’s role in enabling seamless and efficient interactions between AI agents and web services, resolving issues like inconsistent data extraction and high latency. The section also discusses the monetization opportunities that the UIM protocol creates for web services by providing structured, discoverable, and executable intents.
 
 ## Concept Abstract
 
