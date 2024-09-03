@@ -1,8 +1,14 @@
 # UIM Protocol: A Standardized Approach to AI-Agent and Web Service Interactions
 
+## Getting started
+
+1. Get familiar with the concepts and motivations behind the UIM protocol below.
+2. Dive into the [protocol specification section](unified-intent-mediator-api-specification.md) to understand the detailed framework proposal.
+3. Explore the [implementation guide](unified-intent-mediator-implementation-guide.md) to learn how to implement the UIM protocol in your projects.
+
 ## TLDR
 
-The [API specification section](unified-intent-mediator-api-specification.md) of the Unified Intent Mediator (UIM) protocol details the comprehensive framework proposal for seamless, secure, and scalable interactions between AI agents and web services. This section outlines how the UIM protocol standardizes key processes, including service registration, intent management, and execution, to ensure consistent and reliable interaction between AI agents and web services. It also highlights the key innovations that make the UIM protocol a catalyst for the evolution of AI-agent and web service interactions.
+The [protocol specification section](unified-intent-mediator-api-specification.md) of the Unified Intent Mediator (UIM) details the comprehensive framework proposal for seamless, secure, and scalable interactions between AI agents and web services. This section outlines how the UIM protocol standardizes key processes, including service registration, intent management, and execution, to ensure consistent and reliable interaction between AI agents and web services. It also highlights the key innovations that make the UIM protocol a catalyst for the evolution of AI-agent and web service interactions.
 
 Key innovations in this specification include:
 
@@ -45,7 +51,7 @@ Despite the advancements in AI technology, the methods AI agents use to interact
    - **Performance Overhead:** Simulating user actions like clicking buttons or filling forms is resource-intensive, resulting in significant computational overhead and slower response times. This approach not only degrades the user experience but also limits the scalability of AI-driven processes.  
    - **Error-Prone Processes:** Browser simulations are vulnerable to dynamic content, pop-ups, and CAPTCHA challenges, which frequently interrupt automated processes. This susceptibility to errors leads to incomplete or failed tasks, reducing reliability.  
 3. **Lack of Standardization**  
-   - **Varied API Designs:** Web services often expose APIs with diverse design paradigms, making uniform interaction across multiple services a complex and time-consuming task. The absence of standardized protocols forces developers to create custom integrations for each service, increasing development time and complexity.  
+   - **Varied API Designs:** Web services can often expose public APIs with diverse design paradigms, making uniform interaction across multiple services a complex and time-consuming task. The absence of standardized protocols forces developers to create custom integrations for each service, increasing development time and complexity.  
    - **Inconsistent Data Formats:** Different services return data in various formats (e.g., XML, JSON, HTML), requiring AI agents to implement multiple parsers. This not only complicates data handling but also increases the potential for errors during processing.  
 4. **Limited Access to Deep Functionality**  
    - **Surface-Level Interactions:** Traditional methods are typically confined to basic data retrieval and simple transactions. Accessing more sophisticated functionalities, such as personalized services or complex transactions, is often buried under layers of navigation and authentication, making it difficult for AI agents to perform advanced tasks.  
@@ -54,7 +60,7 @@ Despite the advancements in AI technology, the methods AI agents use to interact
    - **Complex Authentication Mechanisms:** Handling modern authentication protocols like OAuth2.0 or two-factor authentication programmatically is challenging and can introduce security vulnerabilities if not implemented correctly.  
    - **Data Privacy Concerns:** Direct interaction methods like scraping often do not comply with data protection regulations such as GDPR or CCPA. Ensuring compliance under these conditions is difficult, posing significant risks related to user privacy and data security.
 
-These inefficiencies underscore the pressing need for a more robust, standardized, and secure protocol for AI-agent interactions with web services. The Unified Intent Mediator (UIM) is designed specifically to address these challenges, providing a solution that not only resolves these issues but also enhances the overall functionality and user experience in AI-driven applications.
+These inefficiencies underscore the pressing need for a more robust, standardized, and secure protocol for AI-agent interactions with web services. The Unified Intent Mediator (UIM) is designed specifically to address these challenges, providing a solution that not only resolves these issues but also enhances the overall functionality and user experience in AI-driven agentic applications.
 
 ## Motivation for the Unified Intent Mediator (UIM)
 
@@ -66,19 +72,19 @@ The shortcomings in current AI-agent interactions with web services highlight an
    - **Standardization Across Services:** UIM introduces a standardized protocol for AI-agent interactions, replacing the patchwork of web scraping and simulated browser actions with a consistent, well-defined interface. By enabling web services to expose their functionalities as specific, structured intents, UIM ensures that AI agents can interact uniformly across different platforms, significantly reducing development complexity and maintenance overhead.  
    - **Eliminating the Need for Scraping and Simulations:** With UIM, AI agents interact directly with services via standardized intents, bypassing the need for unreliable and resource-intensive methods like scraping and simulation. This direct approach enhances reliability and reduces latency, improving the overall efficiency of AI-driven tasks.  
 2. **Enhanced Security**  
-   - **Robust Authentication Mechanisms:** UIM incorporates secure authentication protocols, such as OAuth2.0, ensuring that only authorized AI agents can access and execute intents. This approach not only secures interactions but also simplifies the process of managing authentication, reducing the risk of vulnerabilities.  
+   - **Robust Authentication Mechanisms:** UIM incorporates secure authentication protocols,  ensuring that only authorized AI agents can access and execute intents. This approach not only secures interactions but also simplifies the process of managing authentication, reducing the risk of vulnerabilities.  
    - **Encrypted Communications:** All data exchanges between AI agents and web services via UIM are encrypted, safeguarding sensitive information from potential interception or tampering. This emphasis on security builds trust in the system and ensures compliance with data protection regulations.  
 3. **Standardization and Interoperability**  
    - **Unified Interface for AI Agents:** By adhering to a common set of standards, UIM promotes interoperability across a wide range of web services. This eliminates the need for custom integrations, enabling AI agents to seamlessly interact with multiple services using a consistent interface.  
    - **Simplified Integration Process:** The UIM protocol simplifies the integration process for both AI agents and web services, reducing the time and effort required to deploy new functionalities. This standardization accelerates development and fosters a more cohesive ecosystem of AI-driven applications.  
 4. **Automation and Integration**  
-   - **Enabling Advanced Automation:** UIM unlocks new possibilities for automation by allowing AI agents to programmatically access a broad range of functionalities—from simple data retrieval to complex user account management tasks. This level of automation streamlines operations, reduces manual intervention, and enhances the overall productivity of AI-agent interactions.  
+   - **Enabling Advanced Automation:** UIM unlocks new possibilities for automation by allowing AI agents to programmatically access a broad range of functionalities—from simple data retrieval to complex user account management tasks. This level of automation streamlines operations, reduces manual intervention, and enhances the overall productivity of agentic interactions.  
    - **Seamless Integration of Services:** UIM facilitates seamless integration between AI agents and web services, enabling the creation of more sophisticated and interconnected solutions. This ability to integrate and automate across platforms is critical for developing advanced AI-driven applications that require complex workflows.  
 5. **Improved User Experience**  
    - **Faster, More Accurate Interactions:** By enabling direct and efficient communication between AI agents and web services, UIM dramatically improves the speed and accuracy of interactions. This leads to a superior user experience, where tasks are completed quickly and reliably, without the friction associated with traditional methods.  
    - **Enhanced Functionality:** Users benefit from the expanded capabilities that UIM provides, as AI agents can now perform a wider range of tasks with greater precision. Whether it’s automating routine tasks or managing complex transactions, the improved functionality translates to a more satisfying and seamless user experience.  
 6. **Sustainable Monetization Model**  
-   - **Revenue Opportunities for Service Providers:** UIM offers a sustainable monetization model by acting as an intermediary that facilitates transactions between AI agents and web services. Service providers can monetize their capabilities by charging for access to their intents, creating new revenue streams and incentivizing participation in the UIM ecosystem.  
+   - **Revenue Opportunities for Service Providers:** UIM suggests a sustainable monetization model that aims to facilitate transactions between AI agents and web services. Service providers can monetize their capabilities by charging for access to their intents, creating new revenue streams and incentivizing participation in the UIM ecosystem. This also ensures that copyrighted content is protected and compensated fairly.
    - **Flexible Monetization Strategies:** Whether through transaction fees, subscription models, or usage-based billing, UIM provides multiple pathways for monetization, allowing service providers to choose the strategy that best suits their business model. This flexibility ensures that the protocol can adapt to different market needs and continue to grow.
 
 The Unified Intent Mediator (UIM) protocol is more than just a solution to current inefficiencies—it is a comprehensive platform that redefines how AI agents interact with web services. By standardizing interactions, enhancing security, and providing a sustainable monetization model, UIM paves the way for more efficient, reliable, and scalable AI-driven applications. As the demand for intelligent automation continues to rise, UIM is poised to become the cornerstone of next-generation AI-web service integrations.
@@ -90,7 +96,7 @@ The Unified Intent Mediator (UIM) protocol is more than just a solution to curre
 ### Intents
 
 **Layman’s Overview**
-Imagine you’re using a virtual assistant to complete tasks for you online. You might ask it to find a product, check the weather, or schedule a meeting. Each of these tasks represents an “intent”—an action that you want the assistant to perform. In the context of the UIM protocol, an “intent” is a predefined action that an AI agent (like your virtual assistant) can execute on a web service. These intents are like shortcuts that tell the AI exactly what to do, ensuring that the task is completed correctly and efficiently.
+Imagine you’re using a virtual assistant to complete tasks for you online. You might ask it to find a product, check the weather, or schedule a meeting. Each of these tasks represents an “intent” — an action that you want the assistant to perform. In the context of the UIM protocol, an “intent” is a predefined action or workflow that an AI agent (like your virtual assistant) can execute on a web service. These intents are like shortcuts that tell the AI exactly what to do, ensuring that the task is completed correctly and efficiently.
 
 **Example in Everyday Life:**  
 Think of intents as buttons on a remote control. Each button has a specific function—one for turning on the TV, another for changing the channel, and so on. The remote control (AI agent) uses these buttons (intents) to interact with the TV (web service) without you needing to know how the TV actually works inside.
@@ -105,10 +111,12 @@ In the Unified Intent Mediator (UIM) API, an intent represents a specific action
 - **CheckAccountBalance**: Retrieves the current balance of a user’s account in a banking service.  
 - **BookAppointment**: Schedules an appointment with a healthcare provider or service professional.
 
+Other intent examples can be found [here](intent_examples.md) for inspiration.
+
 ### Metadata and Parameters
 
-**Layman’s Overview**
-Metadata is like the label on a file folder. It doesn’t tell you the full content inside, but it gives you key information about what’s there—such as the title, date, and author—so you can quickly understand and organize it. In the UIM protocol, metadata provides important details about each intent, such as what it does, what inputs it needs, and how it should be used. This information helps AI agents decide which intents to use and how to use them effectively.
+**Layman’s Overview:**
+Metadata is like the label on a file folder. It doesn’t tell you the full content inside, but it gives you key information about what’s there—such as the title, date, and author—so you can quickly understand and organize it. In the UIM protocol, metadata provides important details about each intent, such as what it does, what inputs it needs, and how it should be used. This information helps AI agents decide which intents to use and how to use them correcly.
 
 **Example in Everyday Life:**  
 Imagine you’re organizing a bookshelf. The metadata would be like the labels on each book—title, author, genre. These labels help you quickly find the book you’re looking for without having to open every single one.
@@ -117,7 +125,7 @@ Each intent in the UIM is accompanied by descriptive metadata and parameters tha
 
 **Components of Metadata:**
 
-- **Name**: A unique identifier for the intent.  
+- **Name**: A unique identifier for the intent provided by a service.  
 - **Description**: A brief explanation of what the intent does.  
 - **Category**: The category or type of action (e.g., e-commerce, finance, healthcare).
 
@@ -136,14 +144,14 @@ The execute method is a critical component of the UIM protocol, responsible for 
 
 ![The execute method overview](images/execute-method.png)
 
-- **Input Validation:** The perform method begins by validating the input parameters to ensure they meet the required criteria. This step prevents errors and ensures that the execution proceeds smoothly.  
-  - Example: For the SearchProducts intent, the perform method checks that the query parameter is provided and that optional parameters are in the correct format.  
-- **Execution:** Once the inputs are validated, the perform method executes the intent by interacting with the web service’s provided API endpoint(s). This step involves making the actual API calls, handling throttling mechanisms, lookup potential cached data, handling retries, etc.  
-  - Example: The perform method sends a request to the e-commerce service’s product search API with the validated parameters.  
-- **Response Formatting:** After executing the intent, the perform method formats the response into a structured format that the AI agent can easily interpret. This step ensures consistency in the responses provided by different web services.  
-  - Example: The e-commerce service returns a list of products matching the search criteria, which the perform method formats into a standardized JSON response.  
-- **Error Handling:** The perform method includes robust error handling to manage any issues that arise during execution. This step ensures that AI agents receive meaningful error messages and can handle failures gracefully.  
-  - Example: If the product search API returns an error (e.g., invalid parameters, service unavailable), the perform method captures the error, formats it into a readable message, and includes suggestions for resolving the issue to the AI Agent response.
+- **Input Validation:** The execute method must begin by validating the input parameters to ensure they meet the required criteria. This step prevents errors and ensures that the execution proceeds smoothly.  
+  - Example: For the SearchProducts intent, the execute method checks that the query parameter is provided and that optional parameters are in the correct format.  
+- **Execution:** Once the inputs are validated, the execute method executes the intent by interacting with the web service’s provided API endpoint(s). This step may involve making the actual API calls, handling throttling mechanisms, lookup potential cached data, handling retries, etc.  
+  - Example: The execute method sends a request to the e-commerce service’s product search API with the validated parameters.  
+- **Response Formatting:** After executing the intent, the execute method must format the response into a structured format that the AI agent can easily interpret. This step ensures consistency in the responses provided by different web services.  
+  - Example: The e-commerce service returns a list of products matching the search criteria, which the execute method formats into a standardized JSON response.  
+- **Error Handling:** The execute method must include robust error handling to manage any issues that arise during execution. This step ensures that AI agents receive meaningful error messages and can handle failures gracefully.  
+  - Example: If the product search API returns an error (e.g., invalid parameters, service unavailable), the execute method captures the error, formats it into a readable message, and includes suggestions for resolving the issue to the AI Agent response.
 
 ## Seamless Integration
 
@@ -152,10 +160,10 @@ Seamless integration is a core goal of the UIM protocol, designed to provide a m
 ![Integration benefits](images/uim-protocol.png)
 
 - **Direct Interaction:** By enabling AI agents to interact directly with web services through standardized intents and actions, the UIM protocol eliminates the need for navigating through web pages or simulating user actions. This direct interaction reduces latency and enhances the speed and reliability of task execution.  
-  - Example: An AI agent tasked with booking a hotel room can directly interact with multiple hotel booking services using the BookRoom intent, providing necessary details like dates, room type, and payment information, without having to navigate through each service’s website.  
+  - Example: An AI agent tasked with booking a hotel room can directly interact with multiple hotel booking services using the SearchForRoom intent, providing necessary details like dates, room type, and other booking information, without having to navigate through each service’s website.  
 - **Improved User Experience:** Seamless integration significantly improves the user experience by providing faster and more accurate responses. Users benefit from the efficiency and reliability of AI agents that can perform complex tasks effortlessly.  
-  - Example: A user asks their AI agent to find and purchase a specific book. The AI agent uses the PurchaseItem intent to interact with various online bookstores, finds the best price, completes the purchase, and provides the user with a confirmation—all potentially within seconds.  
-- **Scalability:** The UIM protocol’s standardized approach allows for easy scalability. Web services can expose new intents and actions as their capabilities expand, and AI agents can leverage these new functionalities without requiring significant modifications.  
+  - Example: A user asks their AI agent to find and purchase a specific book. The AI agent uses the PurchaseItem intent to interact with various online bookstores, finds the best price, completes the purchase, and provides the user with a confirmation — all potentially within seconds.  
+- **Scalability:** The UIM protocol’s standardized approach allows for easy scalability. Web services can expose new intents and actions as their capabilities expand, and AI agents can leverage these new functionalities without requiring significant modifications beyond the initial protocol implementation.  
   - Example: As a streaming service adds new features like personalized recommendations or curated playlists, it can expose these capabilities as new intents (e.g., GetRecommendations, CreatePlaylist). AI agents can seamlessly discover these new intents and add them into their portfolio of tools automatically.  
 - **Consistency Across Services:** By adhering to a common set of standards, the UIM protocol ensures consistent behavior and responses across different web services. This consistency simplifies the development of AI agents and enhances their ability to provide reliable and predictable outcomes.  
   - Example: An AI agent designed to manage social media posts can use the PostContent intent across multiple platforms (e.g., Facebook, Twitter, Instagram) with a consistent set of parameters and expected responses, simplifying the management of multi-platform content.
@@ -168,13 +176,13 @@ Discoverability is a crucial aspect of the Unified Intent Mediator protocol, ens
 
 ### Intent Catalog
 
-The intent catalog serves as a centralized repository where all registered intents and their associated metadata are stored. This catalog is critical for enabling AI agents to discover and interact with available services.
+An intent catalog serves as a centralized repository where all registered intents and their associated metadata are stored. Such a catalog is critical for enabling AI agents to discover and interact with available services. The UIM protocol provides a standardized format for intent registration, ensuring that all intents are consistently structured and easily discoverable. Implementation of an intent catalog should follow the UIM protocol’s specifications to ensure compatibility and interoperability with AI agents and also support advanced search functionality, allowing AI agents to find intents based on keywords, categories, and other relevant parameters.
 
-**API Endpoints**: The catalog exposes RESTful API endpoints to allow for the registration, updating, and querying of intents.
+**API Endpoints**: An intent catalog should expose RESTful API endpoints to allow for the registration, updating, and discovery of intents. This enables web services to easily register their intents and allows AI agents to discover and interact with them.
 
 ### Search Functionality
 
-To facilitate efficient discovery, the UIM protocol provides robust search functionality that allows AI agents to find intents based on keywords, categories, and other relevant parameters.
+To facilitate efficient discovery, the UIM protocol recommends implementing a robust search functionality that allows AI agents to find intents based on keywords, categories, and other relevant parameters. This search functionality should support advanced features like keyword matching, filtering, and sorting to provide AI agents with the most relevant results.
 
 - **Search Indexing**: All intents and their metadata are indexed to support fast and efficient searches. This indexing includes fields such as intent name, description, parameters, tags, and service names.  
 - **Query Language**: The search functionality supports a rich query language that enables complex search queries. AI agents can filter intents by specific criteria, such as required parameters, service provider, or intent category.
@@ -190,9 +198,9 @@ Tags play a crucial role in improving the discoverability of intents by categori
 
 ### Documentation and Examples
 
-Comprehensive documentation and examples are automatically generated for each intent to ensure that AI agents can understand and effectively utilize them.
+Comprehensive documentation and examples should be automatically generated for each intent to ensure that AI agents can understand and effectively utilize them.
 
-Each registered intent includes detailed documentation that covers the following:
+Each registered intent should include detailed documentation that covers the following:
 
 - **Intent Name**: A descriptive and unique name for the intent.  
 - **Description**: A clear explanation of what the intent does, including its purpose and expected outcomes.  
@@ -263,11 +271,11 @@ Each registered intent includes detailed documentation that covers the following
 
 ### Supporting Natural Language Queries for Intent Discoverability by AI Agents
 
-In addition to ordinary intent discovery search, the Unified Intent Mediator (UIM) protocol is designed to enhance the discoverability of intents by integrating natural language processing (NLP) capabilities. This feature empowers AI agents to interpret and utilize natural language queries, making it easier to identify and execute the appropriate actions required to fulfill user requests. By supporting natural language queries, the UIM protocol significantly simplifies the interaction process between AI agents and web services.
+In addition to ordinary intent discovery search, the Unified Intent Mediator (UIM) protocol proposes to enhance the discoverability of intents by integrating natural language processing (NLP) capabilities. This feature empowers AI agents to interpret and utilize natural language queries, making it easier to identify and execute the appropriate actions required to fulfill user requests. By supporting natural language queries, the UIM protocol significantly simplifies the interaction process between AI agents and web services.
 
 #### Enhancing AI Agents with Natural Language Understanding
 
-The integration of natural language interpretation into the UIM protocol allows AI agents to understand and process user instructions expressed in everyday language. This capability is essential for creating more intuitive and efficient interactions. This flexibility in query structure allows AI Agents to pass the original user’s request directly to the UIM discovery API, and through dynamic query translation the system translates the natural language queries into structured search requests that the intent catalog can process. This translation ensures that AI agents can seamlessly access and execute relevant intents.
+The integration of natural language interpretation into an UIM protocol enabled intent catalog allows AI agents to understand and process user instructions expressed in everyday language. This capability is essential for creating more intuitive and efficient interactions. This flexibility in query structure allows AI Agents to pass the original user’s request directly to an UIM discovery API, and through dynamic query translation the system translates the natural language queries into structured search requests that the intent catalog can process. This translation ensures that AI agents can seamlessly access and execute relevant intents.
 
 This capability provides two valuable benefits:
 
@@ -276,7 +284,7 @@ This capability provides two valuable benefits:
 
 ![Intent discovery process](images/intent-discovery.png)
 
-The discoverability of intents within the Unified Intent Mediator protocol is a critical factor for its success. By implementing a robust intent catalog, advanced search functionality, and a comprehensive tagging system, the UIM protocol ensures that AI agents can easily find and utilize the appropriate intents. Detailed documentation and practical examples further support the effective use of these intents, enhancing the overall usability and efficiency of AI-agent interactions with web services within the ecosystem provided by this protocol.
+The discoverability of intents within the Unified Intent Mediator protocol is a critical factor for its success. By implementing a robust intent catalog, advanced search functionality, and a comprehensive tagging system, UIM protocol enablers can ensure that AI agents can easily find and utilize the appropriate intents. Detailed documentation and practical examples further support the effective use of these intents, enhancing the overall usability and efficiency of AI-agent interactions with web services within the ecosystem provided by this protocol.
 
 ## Solving the Monetization Problem
 
@@ -289,7 +297,7 @@ Monetizing interactions between AI agents and web services is a complex challeng
 **How It Works**:
 
 - AI agents pay a subscription fee or per-transaction fee to use the platform.  
-- Web services register their intents and actions with the platform.  
+- Web services register their intents and actions within the platform. Alternatively, the mediation platform could automatically discover and index intents and actions using the UIM protocol.
 - The platform tracks usage and allocates payments to web services based on the number and type of intents executed.
 
 ![Mediator Platform](images/mediator-platform.png)
@@ -300,7 +308,7 @@ Monetizing interactions between AI agents and web services is a complex challeng
 
 ### Usage-Based Billing with API Monetization
 
-**Idea**: Implement a usage-based billing model where AI agents are charged based on the number of API calls they make. Web services set prices for their intents and actions, and the platform handles the billing.
+**Idea**: Implement a usage-based billing model where AI agents are charged based on the number of API calls they make. Web services set prices for their intents and actions, and handles the billing.
 
 **How It Works**:
 
@@ -315,7 +323,7 @@ Monetizing interactions between AI agents and web services is a complex challeng
 
 ### Subscription Model with Tiered Pricing
 
-**Idea**: Offer subscription plans for AI agents with tiered pricing based on usage limits, access to premium intents, and additional features. Web services can earn a share of the subscription revenue based on the usage of their intents.
+**Idea**: Offer subscription plans for AI agent platforms with tiered pricing based on usage limits, access to premium intents, and additional features. Web services can earn a share of the subscription revenue based on the usage of their intents.
 
 **How It Works**:
 
@@ -335,7 +343,7 @@ Monetizing interactions between AI agents and web services is a complex challeng
 
 **How It Works**:
 
-- AI agents and web services implement a common protocol based on blockchain.  
+- AI agents and web services utilizes a common protocol based on blockchain.  
 - Each interaction is recorded on the blockchain, and payments are executed via smart contracts.  
 - Payments are distributed automatically based on predefined rules and conditions.
 
@@ -347,12 +355,11 @@ Monetizing interactions between AI agents and web services is a complex challeng
 
 ### Revenue Sharing Partnerships
 
-**Idea**: Form strategic partnerships with major web services and offer a revenue-sharing model. The platform takes a commission on the revenue generated from intents executed through AI agents.
+**Idea**: Form strategic partnerships between major web services and AI agent providers. Revenue generated from these interactions is shared between the platform and the web services. This approach can drive adoption and ensure sustained revenue streams.
 
 **How It Works**:
 
-- Partner with major web services to provide exclusive or premium intents.  
-- AI agents access these intents through the platform.  
+- AI Agent providers partner up with major web services to provide exclusive or premium intents - or the other way around.
 - Revenue generated from these interactions is shared between the platform and the web services.
 
 ![Revenue Sharing Partnerships](images/revenue-sharing.png)
@@ -374,7 +381,7 @@ Monetizing interactions between AI agents and web services is a complex challeng
 | \- Encourages efficient use of resources | \- Clear cost structure based on resource consumption | \- Complex billing and tracking mechanisms required |
 | \- Provides incentives for web services to optimize their APIs | \- Proven success in cloud services (e.g., AWS, Azure) | \- Potentially high costs for high-frequency users |
 | **Subscription Model with Tiered Pricing** |  |  |
-| \- Predictable revenue streams for the platform and web services | \- Attracts different user segments through varied pricing tiers | \- Requires continuous addition of value to higher tiers |
+| \- Predictable revenue streams for agentic platforms and web services | \- Attracts different user segments through varied pricing tiers | \- Requires continuous addition of value to higher tiers |
 | \- Simplifies budgeting for AI agents | \- Encourages loyalty and long-term usage | \- Balancing pricing and feature availability can be challenging |
 | \- Can offer exclusive features in higher tiers | \- Proven success in SaaS platforms (e.g., Salesforce, Netflix) | \- Potentially less flexible for users with variable usage patterns |
 | **Blockchain-Based Smart Contracts** |  |  |
@@ -382,73 +389,27 @@ Monetizing interactions between AI agents and web services is a complex challeng
 | \- Automated and secure payment processing | \- Ensures trust through immutable records | \- Complexity in integrating blockchain with existing systems |
 | \- Enables micro-transactions efficiently | \- Potential for innovative and fair revenue distribution | \- Volatility of cryptocurrency values |
 | **Revenue Sharing Partnerships** |  |  |
-| \- Aligns incentives between the platform and web services | \- Encourages collaboration and innovation | \- Dependence on the success of partner services |
+| \- Aligns incentives between the agentic platforms and web services | \- Encourages collaboration and innovation | \- Dependence on the success of partner services |
 | \- Can provide exclusive or premium content to AI agents | \- Proven success in affiliate marketing (e.g., Amazon Associates) | \- Requires negotiation and management of partnerships |
 | \- Potential for high revenue through commissions | \- Can attract high-quality web services through revenue sharing | \- Potential complexity in tracking and distributing shared revenue |
 
-### Potential Implementation Steps for Each Strategy
-
-- **Mediator Platform with Transaction Fees**
-
-  1. **Setup**: Establish the centralized platform with robust infrastructure to handle high traffic and ensure security.  
-  2. **Registration**: Web services register their intents and actions with detailed metadata.  
-  3. **Usage Tracking**: Implement a system to track the number and type of intents executed.  
-  4. **Billing**: AI agents are billed either through a subscription or per-transaction fee.  
-  5. **Revenue Distribution**: Payments are distributed to web services based on usage statistics.
-
-- **Usage-Based Billing with API Monetization**
-
-  1. **Pricing Definition**: Web services set prices for their intents and actions based on complexity and resource requirements.  
-  2. **Billing System**: Develop a sophisticated billing system to track API calls and compute costs.  
-  3. **Usage Monitoring**: Implement tools to monitor and log API usage accurately.  
-  4. **Invoice Generation**: Generate detailed invoices for AI agents based on their usage.  
-  5. **Payments**: Distribute payments to web services according to the usage logs.
-
-- **Subscription Model with Tiered Pricing**
-
-  1. **Plan Design**: Design subscription plans with varying levels of access and features.  
-  2. **User Onboarding**: Provide an easy onboarding process for AI agents to choose their desired plan.  
-  3. **Usage Limits**: Implement mechanisms to track and enforce usage limits based on subscription tiers.  
-  4. **Revenue Sharing**: Calculate and distribute revenue to web services based on usage by subscribers.  
-  5. **Plan Upgrades**: Offer seamless upgrade options for users needing higher tiers.
-
-- **Blockchain-Based Smart Contracts**
-
-  1. **Protocol Development**: Develop a common protocol for AI agents and web services based on blockchain technology.  
-  2. **Smart Contract Creation**: Create smart contracts that define the terms of interactions and payment conditions.  
-  3. **Integration**: Integrate blockchain technology with the platform and participating services.  
-  4. **Transaction Recording**: Ensure all interactions and payments are recorded on the blockchain.  
-  5. **Automated Payments**: Execute payments automatically through smart contracts based on predefined rules.
-
-- **Revenue Sharing Partnerships**
-
-  1. **Partnership Identification**: Identify and approach major web services for potential partnerships.  
-  2. **Agreement Negotiation**: Negotiate revenue-sharing agreements with partner services.  
-  3. **Exclusive Intents**: Develop and offer exclusive or premium intents through partnerships.  
-  4. **Revenue Tracking**: Implement systems to accurately track revenue generated from these exclusive interactions.  
-  5. **Commission Distribution**: Distribute commissions to partner services based on the agreed terms.
-
 These monetization strategies provide a range of options that stakeholders in the AI and web service ecosystem can explore. By aligning the UIM protocol with flexible, sustainable revenue models, service providers can ensure that their offerings remain viable while supporting the broader adoption of standardized, AI-driven interactions.
-
-## Conclusion
-
-The Unified Intent Mediator (UIM) protocol represents a significant advancement in the interaction between AI agents and web services. By providing a structured, efficient, and secure method for communication, the UIM protocol transforms how services expose their capabilities and how AI agents perform specific tasks. This approach not only enhances functionality and integration but also introduces a sustainable monetization model for service providers. Through the Unified Intent Mediator API, we are building a powerful intermediary layer that facilitates the future of AI-driven web service interactions.
 
 ## Summary of Benefits
 
 ![Benefits overview](images/uim-benefits.png)
 
 **Streamlined Interaction between AI Agents and Web Services**  
-The UIM API eliminates the necessity for AI agents to simulate user actions through web page navigation. By allowing direct interaction with registered intents, AI agents can perform tasks more quickly and accurately. This reduces the complexity and overhead associated with traditional methods of interaction, leading to more efficient and reliable operations.
+The UIM protocol eliminates the necessity for AI agents to simulate user actions through web page navigation. By allowing direct interaction with registered intents, AI agents can perform tasks more quickly and accurately. This reduces the complexity and overhead associated with traditional methods of interaction, leading to more efficient and reliable operations.
 
 **Enhanced Functionality and Integration**  
-The protocol allows web services to expose a wide range of functionalities as intents, which can be programmatically accessed by AI agents. This capability facilitates the creation of integrated, automated solutions, enhancing the potential for more complex and sophisticated interactions between services. It enables AI agents to perform a broader array of tasks, from simple data retrieval to intricate transaction processing, thereby expanding their utility and effectiveness.
+The protocol allows web services to expose a wide range of functionalities as intents, which can be programmatically accessed by AI agents. This capability facilitates the creation of integrated, automated solutions, enhancing the potential for more complex and sophisticated interactions between these services. It enables AI agents to perform a broader array of tasks, from simple data retrieval to intricate transaction processing, thereby expanding their utility and effectiveness.
 
 **New Revenue Streams for Service Providers**  
 Service providers can monetize their capabilities by charging for access to or usage of their intents. This creates new revenue opportunities and incentivizes more services to participate in the protocol. By offering tiered pricing, subscription models, or pay-per-use options, service providers can tailor their monetization strategies to best suit their offerings and market demands.
 
 **Improved Efficiency and User Experience**  
-By streamlining the interaction process and reducing the time required to complete tasks, the UIM API significantly improves overall efficiency. This enhancement translates to a superior user experience, as AI agents can provide quicker and more reliable responses to user requests. Users benefit from the seamless and efficient execution of tasks, resulting in higher satisfaction and trust in AI-driven services.
+By streamlining the interaction process and reducing the time required to complete tasks, the UIM API significantly improves overall efficiency. This enhancement translates to a superior user experience, as AI agents can provide quicker and more reliable responses to user requests. Users benefit from the seamless and efficient execution of tasks, resulting in higher satisfaction and trust in AI-driven services like personal assistants and chatbots.
 
 **Robust Security and Compliance**  
 The UIM protocol incorporates robust security measures, including encrypted communications and secure authentication protocols like OAuth2.0. These measures ensure that interactions between AI agents and web services are protected against unauthorized access and data breaches. Additionally, the protocol is designed to comply with data protection regulations such as GDPR and CCPA, safeguarding user privacy and building trust in the system.
@@ -463,16 +424,11 @@ The UIM protocol is built with future advancements in mind. It supports the inte
 
 The adoption of the Unified Intent Mediator (UIM) protocol promises to revolutionize the way AI agents and web services interact, paving the way for a new era of intelligent, automated systems. By addressing the current inefficiencies in AI-agent communication and offering a robust, scalable, and secure solution, UIM positions itself as a critical infrastructure component for future digital innovation. As AI continues to evolve and integrate more deeply into various aspects of business and daily life, the UIM protocol will play a crucial role in ensuring that these interactions are efficient, secure, and capable of meeting the demands of tomorrow.
 
-In conclusion, the UIM protocol is not just a technical solution—it is a strategic enabler that will unlock new possibilities in AI-driven automation and web service integration. Its successful implementation will depend on the collaborative efforts of developers, service providers, and industry leaders, all working together to build a more connected and intelligent future.
+In conclusion, the UIM protocol is not just a technical solution — it is a strategic enabler that will unlock new possibilities in AI-driven automation and web service integration. Its successful implementation will depend on the collaborative efforts of developers, service providers, and industry leaders, all working together to build a more connected and intelligent future.
 
 ## **System Architecture of the UIM Protocol: A Detailed Evaluation**
 
-Let's dive deeply into the Unified Intent Mediator (UIM) protocol and evaluate its system architecture based on the two proposed approaches:
-
-1. **Man-in-the-Middle Approach (Centralized Repository)**
-2. **Decentralized Approach (AI Agents Crawling Web Services)**
-
-This evaluation will highlight the architectural differences, benefits, and potential challenges of each approach, providing a comprehensive understanding of how each system operates.
+The UIM protocol is designed to facilitate seamless communication and interaction between AI agents and web services. In this section, we will delve into the system architecture of the UIM protocol, comparing and contrasting two proposed approaches: the Man-in-the-Middle Approach with a Centralized Repository and the Decentralized Approach with AI Agents Crawling Web Services. By evaluating the architectural differences, benefits, and potential challenges of each approach, we can gain insights into the strengths and weaknesses of each design, ultimately informing the selection of the most suitable architecture for implementors of the UIM protocol.
 
 ![Main architecture](images/main-architecture.png)
 
@@ -493,7 +449,7 @@ In the centralized approach, a central system acts as an intermediary (man-in-th
 
 **Architecture Flow:**
 
-1. **Web Service Registration**: Web services register their intents with the central repository using service management endpoints.
+1. **Web Service Registration**: Web services register their intents with the central repository using service management endpoints. Alternatively, the system can automatically discover and register intents using a crawling mechanism.
 2. **Intent Discovery**: AI agents query the discovery endpoints to identify relevant intents based on user requests.
 3. **Intent Details Retrieval**: Once an intent is identified, the agent fetches detailed execution parameters from the repository.
 4. **Execution**: The AI agent submits a request to the execution endpoint, which forwards it to the appropriate web service.
@@ -515,7 +471,7 @@ In the centralized approach, a central system acts as an intermediary (man-in-th
 #### **2. Decentralized Approach: AI Agents Crawling Web Services**
 
 **Overview:**
-In the decentralized approach, AI agents themselves are responsible for discovering and collecting intent information directly from web services. This is achieved through crawling mechanisms that utilize DNS TXT records and `agents.txt` files hosted by web services. The intent information is stored locally by AI agents, allowing them to directly interact with web services without a centralized intermediary.
+In the decentralized approach, AI agents themselves are responsible for discovering and collecting intent information directly from web services. This is achieved through crawling mechanisms that utilize DNS TXT records and/or `agents.txt` files hosted by web services. The intent information is stored locally by AI agents, allowing them to directly interact with web services without a centralized intermediary.
 
 **Key Architectural Components:**
 
@@ -544,7 +500,7 @@ In the decentralized approach, AI agents themselves are responsible for discover
 
 **Challenges:**
 
-- **Inconsistent Data**: Without centralized control, there may be variations in how web services present their intent data, leading to potential inconsistencies.
+- **Inconsistent Data**: Without centralized control, there may be variations in how web services present their intent data, leading to potential inconsistencies. Adherence to the UIM protocol can help mitigate this issue.
 - **Higher Complexity for AI Agents**: Each agent must handle crawling, data parsing, security, and compliance on its own, increasing the complexity of individual agents.
 - **Maintenance Overhead**: AI agents need to frequently crawl and update intent information to stay current, which can be resource-intensive.
 
@@ -567,19 +523,19 @@ In the decentralized approach, AI agents themselves are responsible for discover
 
 By understanding these architectural nuances, stakeholders can better align the UIM protocol’s deployment strategy with their operational needs, ensuring efficient and effective integration between AI agents and web services.
 
-## API Specification
+## UIM Protocol Specification
 
-Read the proposed specification here: [Unified Intent Mediator API](unified-intent-mediator-api-specification.md)
+Check out the proposed specification here: [Unified Intent Mediator Specification](unified-intent-mediator-api-specification.md). It goes into details about the suggested endpoints, data structures, security measures, billing, policy compliance, and more.
 
 ## Future Work and Expansion
 
-The Unified Intent Mediator API represents a significant step forward in facilitating efficient and seamless interactions between AI agents and web services. However, there is substantial potential for further development and expansion. Future work could focus on several key areas to enhance the protocol's capabilities and drive wider adoption.
+The Unified Intent Mediator protocol represents a significant step forward in facilitating efficient and seamless interactions between AI agents and web services. However, there is substantial potential for further development and expansion. Future work could focus on several key areas to enhance the protocol's capabilities and drive wider adoption.
 
 ### Support for More Complex Interactions
 
 As AI technology continues to advance, there will be a growing demand for the API to support more complex interactions. This could involve enabling multi-step processes, where AI agents can chain multiple intents together to complete sophisticated tasks (multi-tool and multi-step scenarios):
 
-- **Multi-Step Intents:** Future iterations of the UIM protocol could include support for multi-step intents, where AI agents execute a sequence of actions as part of a single, cohesive operation. This would enable more complex workflows, such as initiating a transaction, verifying details, and completing the payment, all within a unified process.  
+- **Multi-Step Intents:** Future iterations of the UIM protocol could include support for multi-step intents, where AI agents execute a sequence of actions as part of a single, cohesive operation. This would enable more complex workflows, such as initiating a transaction, verifying details, and completing the payment, all within one unified process.  
 - **Context-Aware Interactions:** Enhancing the UIM protocol to support context-aware interactions would allow AI agents to adjust their behavior based on the current state or environment. For example, an AI agent could modify its requests based on user preferences, historical data, or real-time conditions.
 
 ![Future developments](images/future-development.png)
@@ -587,12 +543,13 @@ As AI technology continues to advance, there will be a growing demand for the AP
 **Examples of Complex Interactions:**
 
 - **E-commerce**: An AI agent could handle the entire purchase process, from searching for a product, comparing prices across multiple platforms, selecting the best deal, and completing the checkout process, all in one seamless interaction.  
-- **Healthcare**: An AI agent could book an appointment, retrieve medical records, and even arrange for prescription deliveries by interacting with multiple intents across different healthcare services.  
+- **Healthcare**: An AI agent could book an appointment, retrieve medical records, and even arrange for prescription deliveries by interacting with multiple intents across different healthcare services or providers.
+- **Finance**: An AI agent could manage a user’s entire investment portfolio, from analyzing market trends, selecting suitable stocks, and executing trades, all within a single interaction.  
 - **Travel Planning**: An AI agent could plan an entire trip by booking flights, hotels, and rental cars, while also arranging for local tours and activities through a series of coordinated intents.
 
 ### Integration of Advanced AI Capabilities
 
-To further enhance the functionality of the Unified Intent Mediator API, integrating advanced AI capabilities such as natural language processing (NLP), machine learning (ML), and predictive analytics would be highly beneficial.
+To further enhance the functionality of the Unified Intent Mediator protocol, integrating advanced AI capabilities such as natural language processing (NLP), machine learning (ML), and predictive analytics would be highly beneficial.
 
 **Advanced AI Capabilities:**
 
@@ -604,7 +561,7 @@ To further enhance the functionality of the Unified Intent Mediator API, integra
 
 ### Exploring Partnerships with Major Web Services and AI Platforms
 
-Partnerships with major web services and AI platforms can significantly accelerate the adoption and innovation of the Unified Intent Mediator API. Collaborating with industry leaders can provide access to a broader range of services and enhance the API's capabilities.
+Partnerships with major web services and AI platforms can significantly accelerate the adoption and innovation of the Unified Intent Mediator protocol. Collaborating with industry leaders can provide access to a broader range of services and enhance the protocol's capabilities and reach.
 
 **Potential Partnerships:**
 
@@ -615,19 +572,19 @@ Partnerships with major web services and AI platforms can significantly accelera
 
 ### Development of a Developer Ecosystem
 
-Creating a vibrant developer ecosystem around the Unified Intent Mediator API can foster innovation and drive the creation of new intents and services. By providing comprehensive documentation, SDKs, and developer tools, the API can attract a community of developers eager to build on the platform.
+Creating a vibrant developer ecosystem around the Unified Intent Mediator protocol can foster innovation and drive the creation of new intents and services. By providing comprehensive documentation, SDKs, and developer tools, the protocol can attract a community of developers eager to build on the concept.
 
 **Developer Ecosystem Initiatives:**
 
-- **Comprehensive Documentation**: Offering detailed guides, tutorials, and API references to help developers understand and utilize the API effectively.  
+- **Comprehensive Documentation**: Offering detailed guides, tutorials, and API references to help developers understand and utilize the protocol effectively.  
 - **Software Development Kits (SDKs)**: Providing SDKs for popular programming languages to streamline the development process and make it easier for developers to integrate their services.  
-- **Developer Tools**: Creating tools for testing, debugging, and monitoring API interactions can help developers build and maintain high-quality services.
+- **Developer Tools**: Creating tools for testing, debugging, and monitoring interactions can help developers build and maintain high-quality services.
 
 ![Developer ecosystem](images/developer-ecosystem.png)
 
 ### Expansion into New Domains
 
-While the initial focus may be on well-established industries like e-commerce, healthcare, and finance, there is significant potential for expanding the Unified Intent Mediator API into new domains. Emerging sectors such as smart cities, IoT, and autonomous vehicles can greatly benefit from the API's capabilities.
+While the initial focus may be on well-established industries like e-commerce, healthcare, and finance, there is significant potential for expanding the Unified Intent Mediator protocol into new domains. Emerging sectors such as smart cities, IoT, and autonomous vehicles can greatly benefit from the protocol capabilities, but might have additional requriements and challenges. By exploring these new domains, the UIM protocol can continue to drive innovation and create new opportunities for seamless, efficient, and intelligent service integration.
 
 **New Domains for Expansion:**
 
@@ -637,24 +594,7 @@ While the initial focus may be on well-established industries like e-commerce, h
 
 ### Summary
 
-The future work and expansion of the Unified Intent Mediator API hold immense potential to revolutionize AI-agent interactions with web services. By supporting more complex interactions, integrating advanced AI capabilities, exploring strategic partnerships, fostering a developer ecosystem, and expanding into new domains, the API can continue to drive innovation and create new opportunities for seamless, efficient, and intelligent service integration. The success of these future efforts will depend on collaboration, innovation, and a commitment to maintaining the protocol’s foundational principles of standardization, security, and scalability.
+The future work and expansion of the Unified Intent Mediator API hold immense potential to revolutionize AI-agent interactions with web services. By supporting more complex interactions, integrating advanced AI capabilities, exploring strategic partnerships, fostering a developer ecosystem, and expanding into new domains, the protocol can continue to drive innovation and create new opportunities for seamless, efficient, and intelligent service integration. The success of these future efforts will depend on collaboration, innovation, and a commitment to maintaining the protocol’s foundational principles of standardization, security, and scalability.
 
 ![Future development timeline](images/future-timeline.png)
 
-## Inspirations
-
-[https://platform.openai.com/docs/actions/getting-started](https://platform.openai.com/docs/actions/getting-started)
-
-[https://python.langchain.com/v0.2/docs/concepts/\#tools](https://python.langchain.com/v0.2/docs/concepts/\#tools)
-
-[https://python.langchain.com/v0.2/docs/how\_to/custom\_tools/](https://python.langchain.com/v0.2/docs/how\_to/custom\_tools/)
-
-[https://apichangelog.substack.com/p/the-missing-link-between-ai-and-apis](https://apichangelog.substack.com/p/the-missing-link-between-ai-and-apis)
-
-[https://developer.apple.com/documentation/appintents](https://developer.apple.com/documentation/appintents)
-
-[https://machinelearning.apple.com/papers/apple\_intelligence\_foundation\_language\_models.pdf](https://machinelearning.apple.com/papers/apple\_intelligence\_foundation\_language\_models.pdf)  
-
-[https://www.multion.ai/blog/introducing-agent-q-research-breakthrough-for-the-next-generation-of-ai-agents-with-planning-and-self-healing-capabilities](https://www.multion.ai/blog/introducing-agent-q-research-breakthrough-for-the-next-generation-of-ai-agents-with-planning-and-self-healing-capabilities)  
-
-[https://arxiv.org/pdf/2310.10634](https://arxiv.org/pdf/2310.10634)
