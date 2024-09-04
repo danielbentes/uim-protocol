@@ -14,7 +14,7 @@ Key innovations in this specification include:
 
 - **Policy Adherence Token (PAT) System**: Introduces a digitally signed token that simplifies policy enforcement by encapsulating permissions, obligations, and billing information. This system not only streamlines compliance checks but also automates billing, making interactions more efficient and reducing administrative overhead.
   
-- **Leveraging DNS TXT Records and/or `agents.txt` for Discovery**: Provides a unique approach to API endpoint discovery by utilizing DNS TXT records and an `agents.txt` file. This method allows AI agents to quickly find API endpoints, understand rate limits, verify terms, and authenticate securely, all using familiar internet protocols.
+- **Leveraging DNS TXT Records and/or `agents.json` for Discovery**: Provides a unique approach to API endpoint discovery by utilizing DNS TXT records and an `agents.json` file. This method allows AI agents to quickly find API endpoints, understand rate limits, verify terms, and authenticate securely, all using familiar internet protocols.
   
 - **Integration with Open Digital Rights Language (ODRL)**: The UIM protocol integrates ODRL to manage permissions, prohibitions, and obligations, ensuring that AI agents and web services operate under clear and enforceable rules. This integration promotes trust and transparency in interactions while allowing for automated enforcement of complex usage policies.
 
@@ -471,21 +471,21 @@ In the centralized approach, a central system acts as an intermediary (man-in-th
 #### **2. Decentralized Approach: AI Agents Crawling Web Services**
 
 **Overview:**
-In the decentralized approach, AI agents themselves are responsible for discovering and collecting intent information directly from web services. This is achieved through crawling mechanisms that utilize DNS TXT records and/or `agents.txt` files hosted by web services. The intent information is stored locally by AI agents, allowing them to directly interact with web services without a centralized intermediary.
+In the decentralized approach, AI agents themselves are responsible for discovering and collecting intent information directly from web services. This is achieved through crawling mechanisms that utilize DNS TXT records and/or `agents.json` files hosted by web services. The intent information is stored locally by AI agents, allowing them to directly interact with web services without a centralized intermediary.
 
 **Key Architectural Components:**
 
-- **DNS TXT Records and `agents.txt` Files**: These files are hosted by web services to provide intent metadata, execution details, policies, rate limits, and authentication methods. They act as a self-descriptive interface for AI agents.
+- **DNS TXT Records and `agents.json` Files**: These files are hosted by web services to provide intent metadata, execution details, policies, rate limits, and authentication methods. They act as a self-descriptive interface for AI agents.
 - **Crawling Mechanism**: AI agents periodically or on-demand crawl these resources to collect and update intent information from various web services.
 - **Local Intent Repository**: Each AI agent maintains its own repository of intent information, allowing it to execute actions based on the data collected from web services.
 - **Execution Endpoint**: AI agents directly call execution endpoints on web services to perform actions, authenticated using data collected during crawling (e.g., PATs, OAuth tokens).
-- **Policy Compliance and Security Layer**: Similar to the centralized model, but managed locally by each AI agent using the information gathered from `agents.txt` and DNS records.
+- **Policy Compliance and Security Layer**: Similar to the centralized model, but managed locally by each AI agent using the information gathered from `agents.json` and DNS records.
 
 ![AI-Agent architecture](images/ai-agent-architecture.png)
 
 **Architecture Flow:**
 
-1. **Crawling and Discovery**: AI agents crawl web services to gather available intents using DNS TXT records and `agents.txt` files.
+1. **Crawling and Discovery**: AI agents crawl web services to gather available intents using DNS TXT records and `agents.json` files.
 2. **Intent Data Storage**: The gathered data is stored locally within the AI agent’s repository, creating a personalized database of actions.
 3. **Execution**: When a user request matches a stored intent, the AI agent directly interacts with the corresponding web service to execute the action.
 4. **Compliance and Security**: The AI agent adheres to rate limits, billing requirements, and authentication methods as outlined in the collected intent data.
@@ -597,4 +597,3 @@ While the initial focus may be on well-established industries like e-commerce, h
 The future work and expansion of the Unified Intent Mediator API hold immense potential to revolutionize AI-agent interactions with web services. By supporting more complex interactions, integrating advanced AI capabilities, exploring strategic partnerships, fostering a developer ecosystem, and expanding into new domains, the protocol can continue to drive innovation and create new opportunities for seamless, efficient, and intelligent service integration. The success of these future efforts will depend on collaboration, innovation, and a commitment to maintaining the protocol’s foundational principles of standardization, security, and scalability.
 
 ![Future development timeline](images/future-timeline.png)
-
