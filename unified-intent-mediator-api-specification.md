@@ -794,7 +794,7 @@ To streamline the process of AI-Agent policy adherence while maintaining securit
 
 1. **Policy Retrieval and Agreement**:  
    1. AI-Agent retrieves the ODRL policy from the specified endpoint.  
-   2. AI-Agent digitally signs the policy using its private key and sends it to the web service.  
+   2. AI-Agent digitally signs the policy using its private key and sends it to the web service alongside it's public key to request a PAT.
 2. **PAT Issuance**:  
    1. Web service verifies the AI-Agent’s signature and agreement.  
    2. Web service issues a PAT, which includes the agreed policy details, permissions, and a validity period.  
