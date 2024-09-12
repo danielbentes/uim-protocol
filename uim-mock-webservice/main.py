@@ -1,17 +1,16 @@
-import json
 import os
 from pydantic import BaseModel, Field
 from typing import Dict, Any
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.responses import JSONResponse
-from jose import JWTError, jwt
+import jwt
 from datetime import datetime, timedelta, timezone
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
-from fastapi.security import APIKeyHeader
+from fastapi.security import HTTPBearer
+import base64
+import uuid
 
 # Load environment variables
 load_dotenv()
@@ -35,7 +34,7 @@ class DetailsResponse(BaseModel):
 class PolicyAgreementRequest(BaseModel):
     agent_id: str = Field(..., description="The unique identifier of the agent")
     signed_policy: str = Field(..., min_length=1, description="The signed policy document")
-    signature: str = Field(..., min_length=1, description="The signature of the policy document")
+    agent_public_key: str = Field(..., min_length=1, description="The public key of the agent")
 
 class ExecuteRequest(BaseModel):
     intent_uid: str = Field(..., description="The unique identifier of the intent")
@@ -44,8 +43,45 @@ class ExecuteRequest(BaseModel):
 
 app = FastAPI()
 
-UIM_SERVICE_PUBLIC_KEY = os.getenv("UIM_SERVICE_PUBLIC_KEY")
-UIM_SERVICE_PRIVATE_KEY = os.getenv("UIM_SERVICE_PRIVATE_KEY")
+def get_key_pair(as_string: bool = False):
+    """
+    Get the key pair for the service.
+
+    """
+    try:
+        private_key_path = os.path.join('keys', 'private_key.pem')
+        public_key_path = os.path.join('keys', 'public_key.pem')
+
+        if not os.path.exists(private_key_path) or not os.path.exists(public_key_path):
+            print(f"Key pair not found for service under /keys.")
+            raise Exception("Key pair not found.")
+
+        with open(private_key_path, 'rb') as f:
+            if as_string:
+                private_key = f.read().decode('utf-8')
+            else:
+                private_key = serialization.load_pem_private_key(
+                    f.read(),
+                    password=None,
+                    backend=default_backend()
+                )
+
+        with open(public_key_path, 'rb') as f:
+            if as_string:
+                public_key = f.read().decode('utf-8')
+            else:
+                public_key = serialization.load_pem_public_key(
+                    f.read(),
+                    backend=default_backend()
+                )
+
+        print(f"Key pair loaded for service under /keys.")
+        return private_key, public_key
+    except Exception as e:
+        print(f"Error loading key pair for service: {e}")
+        raise
+
+UIM_SERVICE_PRIVATE_KEY, UIM_SERVICE_PUBLIC_KEY = get_key_pair()
 UIM_SERVICE_LICENSE = os.getenv("UIM_SERVICE_LICENSE")
 
 @app.get("/agents.json")
@@ -55,6 +91,12 @@ async def get_agents_json(request: Request):
 
 def create_agents_json(request: Request):
     base_url = f"{request.url.scheme}://{request.client.host}:{request.url.port}"
+    public_key_pem = UIM_SERVICE_PUBLIC_KEY.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+    public_key_base64url = base64.urlsafe_b64encode(public_key_pem).decode('utf-8')
+
     return {
         "service-info": {
             "name": "fakerealestate.com",
@@ -86,7 +128,7 @@ def create_agents_json(request: Request):
                 "price": "0.01 USD"
             }
         ],
-        "uim-public-key": UIM_SERVICE_PUBLIC_KEY,
+        "uim-public-key": public_key_base64url,
         "uim-policy-file": f"{base_url}/uim-policy.json",
         "uim-api-discovery": f"{base_url}/uim/intents/search",
         "uim-api-execute": f"{base_url}/uim/execute",
@@ -200,40 +242,45 @@ def create_policy_json(request: Request):
         ]
     }
 
-def verify_signed_policy(signed_policy: str, public_key):
+def verify_signed_policy(signed_policy: str, agent_public_key: str) -> Dict:
     try:
-        # Assuming the signed_policy is a JSON string with 'policy' and 'signature' fields
-        signed_policy_data = json.loads(signed_policy)
-        policy = signed_policy_data['policy']
-        signature = signed_policy_data['signature']
-        
-        public_key.verify(
-            signature.encode(),
-            policy.encode(),
-            padding.PKCS1v15(),
-            hashes.SHA256()
+        # Decode the Base64URL-encoded public key string back to bytes
+        decoded_public_key = base64.urlsafe_b64decode(agent_public_key)
+
+        # Load the decoded bytes into a _RSAPublicKey object
+        public_key = serialization.load_pem_public_key(
+            decoded_public_key,
+            backend=default_backend()
         )
+        # Decode and verify the signed policy
+        decoded_policy = jwt.decode(signed_policy, public_key, algorithms=["RS256"])
+        print(f"Verification successful for policy: {decoded_policy}")
         return True
-    except Exception as e:
-        print(f"Verification failed: {e}")
+    except jwt.ExpiredSignatureError as e:
+        print(f"Error during policy verification: Signature has expired. Full error: {e}")
+        return False
+    except jwt.InvalidTokenError as e:
+        print(f"Error during policy verification: Invalid token. Full error: {e}")
         return False
 
-from fastapi import Depends
-
 def verify_pat(request: Request):
-    token = request.headers.get("uim-pat")
+    authorization_header = request.headers.get("Authorization")
+    if not authorization_header:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    if authorization_header:
+        token_type, token = authorization_header.split(" ")
     if not token:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    
     try:
         # Decode the token without verification to extract the payload
         decoded_pat = jwt.decode(token, options={"verify_signature": False})
+        UIM_SERVICE_PRIVATE_KEY, UIM_SERVICE_PUBLIC_KEY = get_key_pair(True)
         
         # Verify the token's signature
         jwt.decode(
             token,
-            UIM_SERVICE_PUBLIC_KEY,
-            algorithms=["RS256"],
+            UIM_SERVICE_PRIVATE_KEY,
+            algorithms=["HS256"],
             options={"verify_aud": False}
         )
         
@@ -242,36 +289,43 @@ def verify_pat(request: Request):
             raise HTTPException(status_code=403, detail="PAT expired.")
         
         # Additional checks can be added here, such as permissions and obligations
+        print (f"Verification successful for PAT: {decoded_pat}")
         
-    except JWTError:
-        raise HTTPException(status_code=403, detail="Invalid PAT.")
+    except jwt.InvalidTokenError as e:    # Invalid token
+        raise HTTPException(status_code=403, detail=f"Invalid PAT: {e}")
     
     return decoded_pat
 
 @app.post("/pat/issue")
 async def issue_pat(request: PolicyAgreementRequest):
-    # Mock verification of agreement and signature
+    print(f"Received policy agreement request: {request}")
+    
     if not request.signed_policy:
-        raise HTTPException(status_code=400, detail="Invalid policy agreement.")
+        raise HTTPException(status_code=400, detail="Missing policy agreement.")
+    if not request.agent_public_key:
+        raise HTTPException(status_code=400, detail="Missing agent public key.")
+    if not request.agent_id:
+        raise HTTPException(status_code=400, detail="Missing agent id.")
+    
     # Verify the signed policy
-    if not verify_signed_policy(request.signed_policy, UIM_SERVICE_PUBLIC_KEY):
+    if not verify_signed_policy(request.signed_policy, request.agent_public_key):
         raise HTTPException(status_code=400, detail="Policy verification failed.")
     
-    # Generate and sign a PAT (using JWT for example)
+    # Generate and sign a PAT
     pat = {
-        "uid": "pat-12345",
-        "issued_to": "ai-agent-1",
-        "permissions": ["execute:intent/searchProperty"],
+        "uid": f"uim-pat-{uuid.uuid4()}",
+        "issued_to": request.agent_id,
+        "policy_reference": "uim-policy.json",
         "valid_from": datetime.now(timezone.utc).isoformat(),
         "valid_to": (datetime.now(timezone.utc) + timedelta(days=365)).isoformat()
     }
+    UIM_SERVICE_PRIVATE_KEY, UIM_SERVICE_PUBLIC_KEY = get_key_pair(True)
     token = jwt.encode(pat, UIM_SERVICE_PRIVATE_KEY, algorithm="HS256")
     return {"uim-pat": token}
 
 # Define the security scheme
-security_scheme = APIKeyHeader(name="uim-pat", scheme_name="Policy Adherence Token (PAT) token scheme", description="The PAT encapsulates the agreed policies, permissions, and obligations in a digitally signed token", auto_error=False)
-
-@app.post("/api/execute", dependencies=[Depends(security_scheme)])
+security_scheme = HTTPBearer()
+@app.post("/uim/execute", dependencies=[Depends(security_scheme)])
 async def execute_intent(request: ExecuteRequest, pat: dict = Depends(verify_pat)):
     intent_uid = request.intent_uid
     parameters = request.parameters
