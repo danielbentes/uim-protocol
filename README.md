@@ -1,614 +1,1042 @@
-# UIM Protocol: A Standardized Approach to AI-Agent and Web Service Interactions
+# Unified Intent Mediator (UIM) Protocol Specification
+
+**Version:** 1.0  
+**Date:** September 30, 2024
 
 ## Getting started
 
-1. Get familiar with the concepts and motivations behind the UIM protocol below.
-2. Dive into the [protocol specification section](unified-intent-mediator-api-specification.md) to understand the detailed framework proposal.
-3. Explore the [implementation guide](unified-intent-mediator-implementation-guide.md) to learn how to implement the UIM protocol in your projects.
+1. Get familiar with the [concepts and motivations](uim-concept.md) behind the UIM protocol or just read the specification below.
+2. Dive into the [technical exploration](uim-technical-exploration.md) of the UIM protocol to understand and explore the details of the protocol.
+3. Explore the [prototypes implementations](uim-prototypes-intro.md) to see the UIM protocol in action.
+
+## Abstract
+
+The [protocol specification section](unified-intent-mediator-api-specification.md) of the Unified Intent Mediator (UIM) details the The Unified Intent Mediator (UIM) protocol defines a standardized framework for AI agents to interact with web services through well-defined intents, metadata, and execution methods. By introducing consistency and security in these interactions, UIM enhances efficiency, scalability, and reliability for AI-driven applications. This specification provides comprehensive guidelines for implementing the UIM protocol, ensuring interoperability, security, and compliance across different systems.
+
+Key components include:
+
+- **Intents**: Structured actions that web services can expose, defining specific tasks such as searching products, placing orders, or retrieving data. Each intent has a unique identifier, metadata, and required parameters.
+
+- **Metadata and Parameters**: Each intent comes with metadata (name, description, category) and defined parameters, providing context and specific input requirements.
+
+- **Policy Adherence Tokens (PATs)**: Digitally signed tokens issued by web services that encapsulate permissions, billing, and compliance rules, streamlining policy enforcement and automating billing.
+
+- **Discovery and Execution APIs**: AI agents can query discovery APIs to find available intents and use execution APIs to perform actions. Execution involves validation, interaction with the service’s API, response formatting, and error handling.
+
+- **DNS TXT Records and agents.json Files**: Innovative methods for endpoint discovery, allowing AI agents to find and authenticate API endpoints using familiar internet protocols.
+
+- **Integration with Open Digital Rights Language (ODRL)**: Provides a structured approach to managing permissions, prohibitions, and obligations, ensuring clear and enforceable rules between AI agents and web services.
+
+## Table of Contents
+
+1. [Introduction](#1-introduction)
+   - [1.1 Motivation](#11-motivation)
+   - [1.2 Scope](#12-scope)
+   - [1.3 Out of Scope](#13-out-of-scope)
+2. [Terminology](#2-terminology)
+3. [Key Concepts](#3-key-concepts)
+   - [3.1 Intents](#31-intents)
+   - [3.2 Metadata and Parameters](#32-metadata-and-parameters)
+   - [3.3 The Execute Method](#33-the-execute-method)
+   - [3.4 Policy Adherence Tokens (PATs)](#34-policy-adherence-tokens-pats)
+   - [3.5 AI Agents](#35-ai-agents)
+4. [System Architecture](#4-system-architecture)
+   - [4.1 Centralized Architecture](#41-centralized-architecture)
+   - [4.2 Decentralized Architecture](#42-decentralized-architecture)
+   - [4.3 Hybrid Approach](#43-hybrid-approach)
+5. [Core Components](#5-core-components)
+   - [5.1 Intent Discovery and Execution Endpoints](#51-intent-discovery-and-execution-endpoints)
+   - [5.2 Unique Intent Identifier (UID) Format](#52-unique-intent-identifier-uid-format)
+   - [5.3 Intent Metadata](#53-intent-metadata)
+   - [5.4 Discovery Through DNS TXT Records and `agents.json` Files](#54-discovery-through-dns-txt-records-and-agentsjson-files)
+   - [5.5 Policy Adherence Tokens (PATs) and ODRL Integration](#55-policy-adherence-tokens-pats-and-odrl-integration)
+   - [5.6 Incorporating Billing Information into PATs](#56-incorporating-billing-information-into-pats)
+   - [5.7 Service Management APIs](#57-service-management-apis)
+   - [5.8 Intent Management APIs](#58-intent-management-apis)
+6. [General API Guidelines and Standards](#6-general-api-guidelines-and-standards)
+   - [6.1 Pagination](#61-pagination)
+   - [6.2 Security and Compliance](#62-security-and-compliance)
+   - [6.3 Monitoring and Analytics](#63-monitoring-and-analytics)
+   - [6.4 Scalability](#64-scalability)
+   - [6.5 Error Management Strategy](#65-error-management-strategy)
+7. [Practical Examples and Use Cases](#7-practical-examples-and-use-cases)
+   - [7.1 E-commerce Platform Integration](#71-e-commerce-platform-integration)
+   - [7.2 Real Estate Data Retrieval](#72-real-estate-data-retrieval)
+8. [Security Considerations](#8-security-considerations)
+9. [Privacy Considerations](#9-privacy-considerations)
+10. [Appendix](#10-appendix)
+    - [A. Standard Error Codes and Messages](#a-standard-error-codes-and-messages)
+    - [B. Complete `agents.json` File Example](#b-complete-agentsjson-file-example)
+    - [C. Sample ODRL Policy](#c-sample-odrl-policy)
+    - [D. Sample PAT Structure](#d-sample-pat-structure)
+    - [E. Sample API Requests and Responses](#e-sample-api-requests-and-responses)
+    - [F. Visual Aids](#f-visual-aids)
 
-## TLDR
+## 1. Introduction
 
-The [protocol specification section](unified-intent-mediator-api-specification.md) of the Unified Intent Mediator (UIM) details the comprehensive framework proposal for seamless, secure, and scalable interactions between AI agents and web services. This section outlines how the UIM protocol standardizes key processes, including service registration, intent management, and execution, to ensure consistent and reliable interaction between AI agents and web services. It also highlights the key innovations that make the UIM protocol a catalyst for the evolution of AI-agent and web service interactions.
+![Abstract UIM architecture](images/abstract.png)
 
-Key innovations in this specification include:
+### 1.1 Motivation
 
-- **Policy Adherence Token (PAT) System**: Introduces a digitally signed token that simplifies policy enforcement by encapsulating permissions, obligations, and billing information. This system not only streamlines compliance checks but also automates billing, making interactions more efficient and reducing administrative overhead.
-  
-- **Leveraging DNS TXT Records and/or `agents.json` for Discovery**: Provides a unique approach to API endpoint discovery by utilizing DNS TXT records and an `agents.json` file. This method allows AI agents to quickly find API endpoints, understand rate limits, verify terms, and authenticate securely, all using familiar internet protocols.
-  
-- **Integration with Open Digital Rights Language (ODRL)**: The UIM protocol integrates ODRL to manage permissions, prohibitions, and obligations, ensuring that AI agents and web services operate under clear and enforceable rules. This integration promotes trust and transparency in interactions while allowing for automated enforcement of complex usage policies.
+As Artificial Intelligence (AI) technology advances, there is a growing need for efficient, standardized interactions between AI agents and web services. Traditional methods such as web scraping and simulated user interactions are inefficient, unreliable, and often non-compliant with legal and ethical standards.
 
-- **API endpoints** for service registration, intent management, and execution, enabling AI agents to discover, understand, and interact with web services in a standardized and secure manner. These endpoints are designed to be RESTful, scalable, and easy to integrate with existing systems.
+#### Challenges in Current AI-Agent Interactions
 
-## TLDR for the Concept Section
+1. **Web Scraping Issues**
+   - **Inconsistency**: Unpredictable changes in HTML structures lead to data extraction failures.
+   - **Legal and Ethical Concerns**: Potential violations of terms of service and data privacy laws.
 
-The concept section below explains the foundational elements of the UIM protocol, focusing on key concepts like “intents,” “metadata,” and the “execute method.” It highlights the protocol’s role in enabling seamless and efficient interactions between AI agents and web services, resolving issues like inconsistent data extraction and high latency. The section also discusses the monetization opportunities that the UIM protocol creates for web services by providing structured, discoverable, and executable intents.
+2. **Simulated Browser Interactions**
+   - **Performance Overhead**: High resource consumption affects scalability.
+   - **Dynamic Content Handling**: Difficulty managing JavaScript-rendered content, pop-ups, and CAPTCHAs.
 
-## Concept Abstract
+3. **Lack of Standardization**
+   - **Diverse APIs**: Inconsistent API designs require custom integrations.
+   - **Data Formats**: Multiple data formats necessitate different parsers.
 
-The Unified Intent Mediator (UIM) protocol addresses the critical need for standardized interactions between AI agents and web services. UIM replaces inefficient methods like web scraping and simulated user actions with a consistent, secure, and scalable interface. This protocol enhances reliability, improves efficiency, and simplifies development for AI-driven applications.
+4. **Limited Access to Deep Functionality**
+   - **Restricted Features**: Inability to access advanced functionalities due to API limitations.
+   - **Inefficient Automation**: Hinders the development of sophisticated AI capabilities.
 
-By enabling web services to expose capabilities as structured intents and allowing AI agents to seamlessly discover and execute these intents, UIM offers a scalable solution that:
+5. **Security and Compliance Challenges**
+   - **Complex Authentication**: Varied authentication mechanisms complicate integration.
+   - **Regulatory Compliance**: Navigating data protection laws like GDPR is challenging.
 
-- Enhances automation
-- Improves user experience
-- Opens new monetization avenues for service providers
+![Challenges in AI-Agent interactions with web services](images/challenges-spec.png)
 
-UIM sets a new standard for AI-driven web service integration, from optimizing e-commerce transactions to automating complex workflows.
+### 1.2 Scope
 
-## Introduction
+The Unified Intent Mediator (UIM) protocol addresses these challenges by introducing a standardized, secure method for direct AI agent-web service interaction. This specification aims to:
 
-As AI technology advances, the need for efficient AI agent-web service interactions has become critical. Traditional methods like web scraping and simulated browser actions are inefficient, leading to:
+- **Define the structure and format of intents.**
+- **Establish mechanisms for discovery and execution of intents.**
+- **Integrate Open Digital Rights Language (ODRL) for policy management.**
+- **Utilize Policy Adherence Tokens (PATs) for secure interactions.**
+- **Provide comprehensive guidelines for implementation, ensuring interoperability and compliance.**
 
-- Inconsistent data extraction
-- High latency
-- Frequent errors
-- Poor user experience
-- Increased operational costs
+### 1.3 Out of Scope
 
-The UIM protocol addresses these challenges by introducing a standardized, secure method for direct AI agent-web service interaction. Instead of simulating user actions, UIM allows services to expose capabilities as well-defined intents, which AI agents can discover and execute seamlessly.
+While the Unified Intent Mediator (UIM) Protocol Specification aims to provide a comprehensive framework for AI agents to interact with web services, certain aspects are intentionally excluded to maintain focus and clarity. The following elements are not within the scope of this specification:
 
-### Current Inefficiencies in AI-Agent Interactions with Web Services
+- **Implementation Details of AI Agents and Web Services**: The specification does not dictate the internal architecture or programming paradigms (e.g., object-oriented, functional programming) that AI agents or web services should adopt. It does not prescribe specific programming languages, frameworks, or libraries to be used in implementing the protocol.
+- **Specific Authentication and Authorization Mechanisms**: Details regarding how credentials are stored, rotated, or managed are beyond the scope of this document.
+- **Legal and Regulatory Compliance Beyond Data Privacy**: The specification does not cover compliance with laws beyond data privacy regulations like GDPR and CCPA. It excludes areas such as export controls, accessibility laws, and sector-specific regulations (e.g., HIPAA for healthcare). Issues related to copyright, trademarks, or patents are not addressed.
+- **User Interface and Experience Design**: The specification does not prescribe how users should interact with AI agents or how agents present information to users.
+- **Business Models and Economic Considerations**: While incorporating billing information into PATs is discussed, the specification does not guide on how services should price their intents or services. The specifics of service-level agreements (SLAs), terms of service (ToS), or contractual obligations beyond what’s included in ODRL policies are not covered.
+- **Security Threat Modeling and Mitigation Techniques**: While high-level security considerations are included, specific threat models, vulnerability assessments, or detailed mitigation strategies (e.g., against SQL injection, cross-site scripting) are not.
+- **Detailed Workflow Implementations**: It does not delve into the specific business logic that should be implemented within intents. Detailed workflows or sequence diagrams for complex processes are not provided beyond high-level overviews.
 
-Despite AI advancements, current interaction methods remain rudimentary and problematic:
+## 2. Terminology
 
-1. Web Scraping Challenges
-   - Inconsistent data extraction due to unpredictable HTML changes
-   - Legal and ethical issues, including terms of service violations
+- **Intent**: An action that can be performed by a web service, including metadata and parameters required for execution.  
+- **Parameters**: Inputs required by an intent to perform its action, including name, type, and whether they are required.  
+- **Service**: A web service that publishes its capabilities (intents) using the UIM protocol.  
+- **Endpoint**: The API endpoint where an intent can be executed.  
+- **Metadata**: Descriptive information about an intent, including its name, description, and category.
+- **Policy Adherence Token (PAT)**: A token issued by a web service to an AI agent, encapsulating permissions, usage limits, and billing agreements.
+- **AI Agent**: An application or service that uses intents to interact with web services.
+- **Discovery Endpoint**: The API endpoint where AI agents can query for available intents.
+- **Execution Endpoint**: The API endpoint where AI agents can execute intents.
+- **Policy Endpoint**: The API endpoint where AI agents can request PATs from web services.
+- **Open Digital Rights Language (ODRL)**: A standardized language for expressing policies governing the usage of digital content and services.
 
-2. Simulated Browser Interactions
-   - High performance overhead, degrading user experience
-   - Vulnerability to dynamic content, pop-ups, and CAPTCHAs
+## 3. Key Concepts
 
-3. Lack of Standardization
-   - Diverse API designs requiring custom integrations
-   - Inconsistent data formats necessitating multiple parsers
+### 3.1 Intents
 
-4. Limited Access to Deep Functionality
-   - Restricted to basic data retrieval and simple transactions
-   - Difficulty accessing advanced features due to API limitations
+**Definition**: Intents are predefined actions that an AI agent can perform on a web service. They encapsulate specific tasks, including necessary parameters and execution details.
 
-5. Security and Compliance Challenges
-   - Complex authentication mechanisms
-   - Data privacy concerns and regulatory compliance issues
+**Examples**:
 
-![Challenges in AI-Agent interactions with web services](images/challenges.png)
+- **SearchProducts**
+- **GetProductDetails**
+- **PlaceOrder**
 
-### Motivation for the Unified Intent Mediator (UIM)
+#### Unique Intent Identifier (UID) Format
 
-UIM addresses these challenges through:
+The UID ensures that AI agents can uniquely identify and call intents from different service providers.
 
-1. Structured Interaction
-   - Standardization across services
-   - Direct service communication, eliminating scraping and simulations
+**Format**:
 
-2. Enhanced Security
-   - Robust authentication mechanisms
-   - Encrypted communications
+```js
+namespace:intent_name:version
+```
 
-3. Standardization and Interoperability
-   - Unified interface for AI agents
-   - Simplified integration process
+- **namespace**: Typically the domain or unique identifier of the service provider.
+- **intent_name**: A descriptive and unique name within the namespace.
+- **version**: Indicates the version of the intent.
 
-4. Advanced Automation and Integration
-   - Access to a broad range of functionalities
-   - Seamless integration of complex workflows
+**Examples**:
 
-5. Improved User Experience
-   - Faster, more accurate interactions
-   - Enhanced functionality and task precision
+- `ecommerce.com:SearchProducts:v1`
+- `weather.com:GetForecast:v2`
 
-6. Sustainable Monetization Model
-   - New revenue opportunities for service providers
-   - Flexible monetization strategies
+### 3.2 Metadata and Parameters
 
-The UIM protocol redefines AI agent-web service interactions, paving the way for more efficient, reliable, and scalable AI-driven applications. As intelligent automation demand grows, UIM is positioned to become the cornerstone of next-generation AI-web service integrations.
+Each intent includes:
 
-![Unified Intent Mediator: A catalyst for AI-Agent evolution](images/catalyst.png)
+- **Metadata**: Name, description, category, and tags.
+- **Input Parameters**: Required to execute the intent.
+- **Output Parameters**: Expected results from the intent execution.
 
-## Key Concepts
+![Intent](images/intent-format.png)
 
-The UIM protocol is built on three fundamental concepts: Intents, Metadata and Parameters, and the Execute Method. Each plays a crucial role in facilitating efficient communication between AI agents and web services.
+**Example**:
 
-![Key concepts](images/concept.png)
-
-### Intents
-
-Intents are the core building blocks of the UIM protocol. They represent specific, predefined actions that an AI agent can perform on a web service. By standardizing these actions, UIM creates a common language for interaction, significantly reducing complexity and enhancing efficiency.
-
-In practical terms, an intent is analogous to a function call in programming. It encapsulates a discrete task, complete with the necessary information to execute it. For example, an e-commerce platform might offer intents such as:
-
-- SearchProducts: Enables product searches based on various criteria
-- GetProductDetails: Retrieves detailed information about a specific product
-- PlaceOrder: Initiates and processes a purchase transaction
-
-Other intent examples can be found [here](intent_examples.md) for inspiration.
-
-This standardization allows AI agents to interact uniformly across different services, streamlining development and improving reliability.
-
-### Metadata and Parameters
-
-Metadata and parameters provide the context and specifics needed to execute intents effectively. They serve as the blueprint for each intent, detailing its purpose and requirements.
-
-Metadata typically includes:
-
-- Name: A unique identifier for the intent
-- Description: A concise explanation of the intent's function
-- Category: The type of action (e.g., e-commerce, finance, healthcare)
-
-Parameters specify the input required for the intent's execution. For a 'SearchProducts' intent, parameters might include:
-
-- query (string): The search term
-- category (string): The product category filter
-- price_range (string): The price range filter
-- sort_by (string): The sorting criteria
-
-This structured approach ensures that AI agents can provide the necessary information in the correct format, facilitating accurate and efficient intent execution.
-
-### The Execute Method
-
-The execute method is the operational core of the UIM protocol. It manages the actual execution of intents, ensuring smooth interaction between AI agents and web services. The method operates in four key stages:
-
-1. Input Validation: Verifies that all required parameters are present and correctly formatted
-2. Execution: Interacts with the web service's API to perform the requested action
-3. Response Formatting: Standardizes the web service's response for consistent interpretation by AI agents
-4. Error Handling: Manages exceptions and provides meaningful feedback for error resolution
-
-![The execute method overview](images/execute-method.png)
-
-This systematic approach enhances reliability and simplifies troubleshooting, contributing to a more robust interaction framework.
-
-## Seamless Integration and Discoverability in the UIM Protocol
-
-The UIM protocol prioritizes seamless integration and efficient discoverability, offering significant improvements over traditional AI-agent interactions with web services.
-
-### Seamless Integration
-
-![Integration benefits](images/uim-protocol.png)
-
-The UIM protocol facilitates seamless integration through:
-
-1. **Direct Interaction**
-   - Eliminates navigation through web pages or user action simulation
-   - Reduces latency and enhances task execution speed and reliability
-   - Example: AI agents can book hotel rooms across multiple services using a single SearchForRoom intent
-
-2. **Improved User Experience**
-   - Provides faster and more accurate responses
-   - Enables AI agents to perform complex tasks efficiently
-   - Example: An AI agent can find, purchase, and confirm a book order within seconds
-
-3. **Scalability**
-   - Allows easy addition of new intents as web service capabilities expand
-   - AI agents can leverage new functionalities with minimal modifications
-   - Example: Streaming services can add intents like GetRecommendations or CreatePlaylist, which AI agents can automatically discover and utilize
-
-4. **Consistency Across Services**
-   - Ensures uniform behavior and responses across different web services
-   - Simplifies AI agent development and enhances reliability
-   - Example: A social media management AI can use a consistent PostContent intent across multiple platforms
-
-### Discoverability
-
-![How to improve discoverability](images/discoverability.png)
-
-The UIM protocol enhances intent discoverability through:
-
-1. **Intent Catalog**
-   - Centralized repository for all registered intents and metadata
-   - Standardized format for intent registration
-   - RESTful API endpoints for intent registration, updating, and discovery
-
-2. **Advanced Search Functionality**
-   - Robust search capabilities based on keywords, categories, and other parameters
-   - Features include:
-     - Search indexing of all intent metadata
-     - Rich query language for complex searches
-     - Relevance-based ranking of search results
-
-3. **Intent Tagging System**
-   - Categorizes intents into meaningful groups
-   - Allows multiple tags per intent (e.g., shopping, product search, retail for e-commerce intents)
-   - Supports both service-defined and community-driven tagging
-   - Enables tag-based search refinement
-
-4. **Comprehensive Documentation**
-   - Automatically generated for each intent
-   - Includes:
-     - Intent name and description
-     - Detailed parameter information
-     - API endpoint details
-     - Usage examples with sample requests and responses
-
-#### Example of an Intent Documentation
-
-``` json
+```json
 {
-  "intent_uid": "ecommercePlatform:searchProducts:v1",
+  "intent_uid": "ecommerce.com:SearchProducts:v1",
   "intent_name": "SearchProducts",
-  "description": "Search for products based on given criteria",
-  "parameters": [
-    {
-      "name": "query", 
-      "type": "string", 
-      "required": true, 
-      "description": "The search term"
-    },
-    {
-      "name": "category", 
-      "type": "string", 
-      "required": false, 
-      "description": "Product category"
-    },
-    {
-      "name": "price_range", 
-      "type": "string", 
-      "required": false, 
-      "description": "Price range in the format 'min-max'"
-    },
-    {
-      "name": "sort_by", 
-      "type": "string", 
-      "required": false, 
-      "description": "Sort criteria (e.g., popularity, price)"
-    }
+  "description": "Search for products based on criteria",
+  "input_parameters": [
+    {"name": "query", "type": "string", "required": true, "description": "Search term"},
+    {"name": "category", "type": "string", "required": false, "description": "Product category"},
+    {"name": "price_range", "type": "string", "required": false, "description": "Price range filter"},
+    {"name": "sort_by", "type": "string", "required": false, "description": "Sorting criteria"}
   ],
-  "endpoint": "https://api.ecommerce.com/api/products/search",
-  "examples": {
-    "request": {
-      "method": "GET",
-      "url": "https://api.ecommerce.com/api/products/search",
-      "params": {
-        "query": "laptops",
-        "category": "electronics",
-        "price_range": "1000-2000",
-        "sort_by": "popularity"
-      }
-    },
-    "response": {
-      "status": "success",
-      "data": [
-        {
-          "product_id": "123",
-          "name": "Gaming Laptop",
-          "price": 1500,
-          "category": "electronics"
-        }
-      ]
-    }
-  },
-  "tags": ["shopping", "product search", "retail"]
+  "output_parameters": [
+    {"name": "products", "type": "array", "description": "List of products"},
+    {"name": "total_results", "type": "integer", "description": "Total number of results"}
+  ],
+  "endpoint": "https://api.ecommerce.com/products/search",
+  "tags": ["e-commerce", "search", "products"]
 }
 ```
 
-### Natural Language Support for Intent Discovery in UIM
-
-The UIM protocol enhances intent discoverability by incorporating natural language processing (NLP) capabilities. This feature allows AI agents to interpret and utilize natural language queries, simplifying the process of identifying and executing appropriate actions to fulfill user requests.
-
-#### Natural Language Understanding for AI Agents
-
-Integration of NLP into the UIM protocol's intent catalog enables AI agents to process user instructions expressed in everyday language. This capability is crucial for creating more intuitive and efficient interactions. Key features include:
-
-1. **Flexible Query Structure**: AI agents can pass original user requests directly to a UIM discovery API.
-2. **Dynamic Query Translation**: The system translates natural language queries into structured search requests for the intent catalog.
-
-![Intent discovery process](images/intent-discovery.png)
-
-This approach offers two primary benefits:
-
-1. **Improved Discoverability**
-   - AI agents quickly and accurately find relevant intents by interpreting natural language queries.
-   - Reduces time and effort required to identify appropriate actions.
-   - Enhances overall efficiency of the discovery process.
-
-2. **Enhanced Accuracy**
-   - NLP engine understands context and language nuances.
-   - Enables AI agents to select the most relevant intents and parameters.
-   - Results in more precise and effective actions.
-
-#### Implementation Components
-
-To support natural language queries effectively, the UIM protocol incorporates:
-
-1. **Robust Intent Catalog**: A comprehensive repository of all registered intents and their metadata.
-2. **Advanced Search Functionality**: Supports complex queries and relevance-based ranking.
-3. **Comprehensive Tagging System**: Categorizes intents for easier discovery.
-4. **Detailed Documentation**: Provides clear examples and usage guidelines for each intent.
-
-By implementing these features, the UIM protocol significantly enhances the discoverability and usability of intents. This approach ensures that AI agents can easily find, understand, and utilize appropriate intents, leading to more efficient and accurate interactions with web services.
-
-The integration of natural language support in the UIM protocol represents a significant advancement in AI-web service interactions. It bridges the gap between human language and machine-readable instructions, paving the way for more intuitive and powerful AI-driven applications.
-
-## Monetization Strategies for the UIM Protocol
-
-The Unified Intent Mediator (UIM) protocol presents various opportunities for monetizing interactions between AI agents and web services. Here are five key strategies, each offering a unique approach to generating revenue while promoting adoption of the UIM protocol:
-
-1. **Mediator Platform with Transaction Fees**
-   - Concept: A centralized platform managing all interactions
-   - Operation:
-     - AI agents pay subscription or per-transaction fees
-     - Web services register intents within the platform
-     - Platform tracks usage and allocates payments
-   - Example: Similar to App Store models (Apple, Google Play)
-   ![Mediator Platform](images/mediator-platform.png)
-
-2. **Usage-Based Billing with API Monetization**
-   - Concept: Charging based on API call volume
-   - Operation:
-     - AI agents billed per API call
-     - Pricing varies with intent complexity
-     - Web services paid based on API usage
-   - Example: Cloud services like AWS, Azure
-   ![Usage-Based Billing](images/usage-based.png)
-
-3. **Subscription Model with Tiered Pricing**
-   - Concept: Tiered subscription plans for AI agents
-   - Operation:
-     - Plans offer varying usage limits and features
-     - Web services compensated based on intent usage
-   - Example: SaaS platforms like Salesforce, Netflix
-   ![Subscription Model](images/subscription.png)
-
-4. **Blockchain-Based Smart Contracts**
-   - Concept: Automated payments via blockchain technology
-   - Operation:
-     - Interactions recorded on blockchain
-     - Smart contracts execute payments automatically
-   - Example: Ethereum's smart contract capabilities
-   ![Blockchain-Based Smart Contracts](images/blockchain.png)
+### 3.3 The Execute Method
 
-5. **Revenue Sharing Partnerships**
-   - Concept: Strategic partnerships between web services and AI agent providers
-   - Operation:
-     - Partners offer exclusive or premium intents
-     - Revenue shared between platform and web services
-   - Example: Affiliate marketing programs like Amazon Associates
-   ![Revenue Sharing Partnerships](images/revenue-sharing.png)
+Responsible for:
 
-### Comparison Table of Monetization Strategies
+1. **Input Validation**: Ensuring all required parameters are present and correctly formatted.
+2. **Authentication**: Verifying the AI agent's identity and PAT.
+3. **Authorization**: Ensuring the AI agent has the necessary permissions as per the PAT and policies.
+4. **Execution**: Performing the action defined by the intent.
+5. **Response Formatting**: Standardizing the response for consistent interpretation by AI agents.
+6. **Error Handling**: Managing exceptions and providing meaningful feedback.
 
-| Monetization Strategy | Pros | Cons |
-| :---- | :---- | :---- |
-| **Mediator Platform with Transaction Fees** |  |  |
-| \- Centralized control and management of interactions | \- Provides a unified platform for discovery, authentication, and execution | \- Dependency on the platform for all interactions |
-| \- Simplifies the process for AI agents and web services | \- Enables consistent tracking and billing | \- Potential for high transaction fees, deterring some users |
-| \- Potential for high revenue through transaction fees | \- Established model with proven success (e.g., App Store) | \- Centralization could lead to single points of failure |
-| **Usage-Based Billing with API Monetization** |  |  |
-| \- Revenue is proportional to actual usage | \- Flexible and scalable model | \- Unpredictable costs for AI agents |
-| \- Encourages efficient use of resources | \- Clear cost structure based on resource consumption | \- Complex billing and tracking mechanisms required |
-| \- Provides incentives for web services to optimize their APIs | \- Proven success in cloud services (e.g., AWS, Azure) | \- Potentially high costs for high-frequency users |
-| **Subscription Model with Tiered Pricing** |  |  |
-| \- Predictable revenue streams for agentic platforms and web services | \- Attracts different user segments through varied pricing tiers | \- Requires continuous addition of value to higher tiers |
-| \- Simplifies budgeting for AI agents | \- Encourages loyalty and long-term usage | \- Balancing pricing and feature availability can be challenging |
-| \- Can offer exclusive features in higher tiers | \- Proven success in SaaS platforms (e.g., Salesforce, Netflix) | \- Potentially less flexible for users with variable usage patterns |
-| **Blockchain-Based Smart Contracts** |  |  |
-| \- Decentralized and transparent transactions | \- Reduces the need for intermediaries | \- High initial setup and implementation costs |
-| \- Automated and secure payment processing | \- Ensures trust through immutable records | \- Complexity in integrating blockchain with existing systems |
-| \- Enables micro-transactions efficiently | \- Potential for innovative and fair revenue distribution | \- Volatility of cryptocurrency values |
-| **Revenue Sharing Partnerships** |  |  |
-| \- Aligns incentives between the agentic platforms and web services | \- Encourages collaboration and innovation | \- Dependence on the success of partner services |
-| \- Can provide exclusive or premium content to AI agents | \- Proven success in affiliate marketing (e.g., Amazon Associates) | \- Requires negotiation and management of partnerships |
-| \- Potential for high revenue through commissions | \- Can attract high-quality web services through revenue sharing | \- Potential complexity in tracking and distributing shared revenue |
+![The execution method](images/execute-method.png)
 
-Each strategy offers unique benefits and challenges. The choice depends on factors such as target market, technological capabilities, and business model preferences. By aligning the UIM protocol with these flexible, sustainable revenue models, service providers can ensure viability while promoting wider adoption of standardized AI-driven interactions.
+### 3.4 Policy Adherence Tokens (PATs)
 
-## Summary of UIM Protocol Benefits
+**Definition**: Digitally signed tokens that encapsulate permissions, usage limits, billing agreements, and compliance terms. They ensure secure and compliant interactions between AI agents and web services.
 
-The Unified Intent Mediator (UIM) protocol offers numerous advantages that collectively transform AI-web service interactions:
+### 3.5 AI Agents
 
-![Benefits overview](images/uim-benefits.png)
+**Definition**: Applications or services that utilize intents to interact with web services.
 
-1. **Streamlined Interaction**
-   - Eliminates need for simulated user actions
-   - Enables direct, efficient task execution via registered intents
-   - Reduces complexity and overhead of traditional methods
+**Responsibilities**:
 
-2. **Enhanced Functionality and Integration**
-   - Exposes wide range of web service functionalities as intents
-   - Facilitates creation of complex, integrated automated solutions
-   - Expands AI agents' capabilities from simple data retrieval to intricate transactions
+- **Discovery**: Finding available intents and services.
+- **Policy Agreement**: Requesting and managing PATs.
+- **Execution**: Performing intents according to policies.
 
-3. **New Revenue Streams**
-   - Allows service providers to monetize intent access/usage
-   - Offers flexible pricing models (tiered, subscription, pay-per-use)
-   - Incentivizes broader participation in the UIM ecosystem
+![AI-agent responsibilities](images/ai-discovery.png)
 
-4. **Improved Efficiency and User Experience**
-   - Streamlines interaction process, reducing task completion time
-   - Enables quicker, more reliable AI agent responses
-   - Enhances user satisfaction and trust in AI-driven services
+## 4. System Architecture
 
-5. **Robust Security and Compliance**
-   - Incorporates encrypted communications and secure authentication (e.g., OAuth2.0)
-   - Designed to comply with data protection regulations (GDPR, CCPA)
-   - Builds trust through enhanced data privacy and security measures
+### 4.1 Centralized Architecture
 
-6. **Scalability and Flexibility**
-   - Modular design allows easy addition of new intents and functionalities
-   - Enables AI agents to adapt to changes with minimal modifications
-   - Supports growth in line with evolving AI-driven application demands
+#### Overview
 
-7. **Innovative and Future-Proof Solution**
-   - Built to integrate emerging technologies (e.g., blockchain, machine learning)
-   - Ensures relevance and adaptability to future technological advancements
-   - Positions UIM as a cornerstone for future AI-web service interactions
+A central repository manages:
 
-## Final Thoughts
+- **Intent Registration**: Web services register their intents with the central repository.
+- **Discovery**: AI agents discover intents via the central system.
+- **Execution**: AI agents execute intents through the central system, which forwards requests to the appropriate web service.
+- **Policy Management**: Centralized issuance and validation of PATs.
 
-The UIM protocol represents a paradigm shift in AI-web service communication, addressing current inefficiencies and offering a robust, scalable, and secure solution. As AI continues to evolve and permeate various aspects of business and daily life, UIM will play a crucial role in ensuring efficient, secure, and capable interactions.
+#### Workflow Description
 
-The success of UIM depends on collaborative efforts from developers, service providers, and industry leaders. By working together, they can leverage this strategic enabler to unlock new possibilities in AI-driven automation and web service integration, building a more connected and intelligent future.
+1. **Service Registration**: Web services register their intents and policies with the central repository.
+2. **Intent Discovery**: AI agents query the central repository to discover available intents.
+3. **Policy Agreement**: AI agents obtain PATs from the central repository after agreeing to policies.
+4. **Execution**: AI agents execute intents via the central repository.
+5. **Response Handling**: The central repository forwards responses from web services to AI agents.
 
-In essence, the UIM protocol is not merely a technical solution, but a catalyst for innovation in the AI and web service ecosystem, promising to revolutionize digital interactions and pave the way for more sophisticated, efficient, and user-friendly AI applications.
+![Centralized Architecture](images/central-arch.png)
 
-## **System Architecture of the UIM Protocol: A Detailed Evaluation**
+#### Pros and Cons
 
-The UIM protocol is designed to facilitate seamless communication and interaction between AI agents and web services. In this section, we will delve into the system architecture of the UIM protocol, comparing and contrasting two proposed approaches: the Man-in-the-Middle Approach with a Centralized Repository and the Decentralized Approach with AI Agents Crawling Web Services. By evaluating the architectural differences, benefits, and potential challenges of each approach, we can gain insights into the strengths and weaknesses of each design, ultimately informing the selection of the most suitable architecture for implementors of the UIM protocol.
+- **Pros**:
+  - Simplified discovery and integration for AI agents.
+  - Unified policy enforcement and compliance management.
+- **Cons**:
+  - Single point of failure.
+  - Scalability challenges with increasing load.
+  - Potential bottleneck affecting performance.
 
-![Main architecture](images/main-architecture.png)
+### 4.2 Decentralized Architecture
 
-### **1. Man-in-the-Middle Approach: Centralized Repository**
+#### Overview
 
-**Overview:**
-In the centralized approach, a central system acts as an intermediary (man-in-the-middle) between AI agents and web services. This central repository collects, manages, and provides access to intent information registered by web services. AI agents interact with this repository to discover available intents and execute actions on web services via standardized endpoints.
+AI agents interact directly with web services without a central intermediary.
 
-**Key Architectural Components:**
+#### Workflow Description
 
-- **Central Repository**: The core of this architecture, where web services register their intents. This repository contains metadata, parameters, and execution details for each intent.
-- **Service Management Endpoints**: Web services use these endpoints to register, update, and manage their intents in the repository.
-- **Discovery Endpoints**: AI agents use these endpoints to search for available intents, fetch detailed information, and identify which actions they can execute.
-- **Execution Endpoint**: Facilitates the actual execution of an action by forwarding requests from AI agents to the appropriate web service based on registered intents.
-- **Policy Adherence and Security Layer**: Manages authentication, authorization, and rate limiting, often using the Policy Adherence Token (PAT) system. It ensures compliance and secure interaction between AI agents and web services.
+1. **Discovery via DNS TXT and `agents.json`**: AI agents discover web services through DNS records and retrieve `agents.json` files.
+2. **Policy Retrieval and Agreement**: AI agents obtain ODRL policies and request PATs directly from web services.
+3. **Intent Execution**: AI agents execute intents directly with web services using the obtained PATs.
+4. **Response Handling**: Web services respond directly to AI agents.
 
-![Centralized repository](images/centralized-repo.png)
+![Decentralized Architecture](images/decentral-arch.png)
 
-**Architecture Flow:**
+#### Pros and Cons
 
-1. **Web Service Registration**: Web services register their intents with the central repository using service management endpoints. Alternatively, the system can automatically discover and register intents using a crawling mechanism.
-2. **Intent Discovery**: AI agents query the discovery endpoints to identify relevant intents based on user requests.
-3. **Intent Details Retrieval**: Once an intent is identified, the agent fetches detailed execution parameters from the repository.
-4. **Execution**: The AI agent submits a request to the execution endpoint, which forwards it to the appropriate web service.
-5. **Response Handling**: The results are returned to the AI agent, which then processes and presents the output to the user.
+- **Pros**:
+  - Enhanced scalability due to distributed interactions.
+  - Greater control and autonomy for web services.
+- **Cons**:
+  - Increased complexity for AI agents managing diverse policies.
+  - Potential inconsistencies in policy enforcement across services.
 
-**Benefits:**
+### 4.3 Hybrid Approach
 
-- **Centralized Management**: A single point of management for all intents simplifies oversight, updates, and maintenance.
-- **Consistent Data Structure**: Standardized intent formats and metadata facilitate easier integration and use by AI agents.
-- **Enhanced Security**: Centralized control over access, authentication, and rate limiting helps enforce security and compliance measures.
-- **Reliable Monetization**: A clear, controlled pathway for monetization, allowing the central system to manage payments and enforce billing policies.
+#### Overview
 
-**Challenges:**
+Combines centralized discovery with decentralized execution and PAT issuance.
 
-- **Scalability**: As the number of registered web services and AI agents grows, the central system must handle significant data volumes and high transaction loads.
-- **Single Point of Failure**: Any issues with the central repository can disrupt the entire system, impacting both AI agents and web services.
-- **Data Privacy Concerns**: Central storage of intent information may raise concerns about data ownership and privacy for web services.
+#### Workflow Description
 
-#### **2. Decentralized Approach: AI Agents Crawling Web Services**
+1. **Centralized Discovery**: AI agents use the central repository to discover available intents and services.
+2. **Decentralized Policy Agreement**: AI agents retrieve policies and obtain PATs directly from web services.
+3. **Direct Execution**: AI agents execute intents directly with web services using the obtained PATs.
+4. **Response Handling**: Web services respond directly to AI agents.
 
-**Overview:**
-In the decentralized approach, AI agents themselves are responsible for discovering and collecting intent information directly from web services. This is achieved through crawling mechanisms that utilize DNS TXT records and/or `agents.json` files hosted by web services. The intent information is stored locally by AI agents, allowing them to directly interact with web services without a centralized intermediary.
+![Hybrid Approach](images/hybrid-arch.png)
 
-**Key Architectural Components:**
+#### Pros and Cons
+
+- **Pros**:
+  - Efficient discovery through a centralized system.
+  - Maintains autonomy and control for web services in execution and policy management.
+- **Cons**:
+  - Coordination complexity between central and decentralized components.
+  - Diverse compliance requirements increase AI agent complexity.
+
+## 5. Core Components
+
+### 5.1 Intent Discovery and Execution Endpoints
+
+#### Purpose
+
+Enable AI agents to:
+
+- **Discover** available intents.
+- **Execute** intents securely.
+
+#### Implementation
+
+- **Centralized Context**: Unified discovery endpoint managed by the central repository.
+- **Decentralized Context**: Each web service hosts its own discovery and execution endpoints.
+- **Hybrid Context**: Centralized discovery with decentralized execution endpoints.
+
+#### API Endpoints
+
+1. **Intent Discovery**
+
+   - **Endpoint**: `/api/intents/search`
+   - **Method**: `GET`
+   - **Parameters**:
+     - `query`: Natural language search term.
+     - `service_name`
+     - `intent_name`
+     - `uid`
+     - `namespace`
+     - `description`
+     - `tags`
+
+   **Example Request**:
+
+   ```curl
+   GET /api/intents/search?intent_name=SearchProducts
+   ```
+
+   **Example Response**:
+
+   ```json
+   {
+     "intents": [
+       {
+         "service_name": "E-commerce Platform",
+         "intent_name": "SearchProducts",
+         "intent_uid": "ecommerce.com:SearchProducts:v1",
+         "description": "Search for products based on criteria",
+         "input_parameters": [
+           {"name": "query", "type": "string", "required": true}
+         ],
+         "output_parameters": [
+           {"name": "products", "type": "array", "description": "List of products"}
+         ],
+         "endpoint": "https://api.ecommerce.com/products/search",
+         "tags": ["e-commerce", "search", "products"]
+       }
+     ]
+   }
+   ```
+
+2. **Execute Intent**
 
-- **DNS TXT Records and `agents.json` Files**: These files are hosted by web services to provide intent metadata, execution details, policies, rate limits, and authentication methods. They act as a self-descriptive interface for AI agents.
-- **Crawling Mechanism**: AI agents periodically or on-demand crawl these resources to collect and update intent information from various web services.
-- **Local Intent Repository**: Each AI agent maintains its own repository of intent information, allowing it to execute actions based on the data collected from web services.
-- **Execution Endpoint**: AI agents directly call execution endpoints on web services to perform actions, authenticated using data collected during crawling (e.g., PATs, OAuth tokens).
-- **Policy Compliance and Security Layer**: Similar to the centralized model, but managed locally by each AI agent using the information gathered from `agents.json` and DNS records.
+   - **Endpoint**: `/api/intents/execute`
+   - **Method**: `POST`
+   - **Headers**:
+     - `Authorization`: Bearer PAT-12345
+     - `Content-Type`: application/json
 
-![AI-Agent architecture](images/ai-agent-architecture.png)
+   **Example Request**:
 
-**Architecture Flow:**
+   ```json
+   POST /api/intents/execute
+   Authorization: Bearer PAT-12345
+   Content-Type: application/json
 
-1. **Crawling and Discovery**: AI agents crawl web services to gather available intents using DNS TXT records and `agents.json` files.
-2. **Intent Data Storage**: The gathered data is stored locally within the AI agent’s repository, creating a personalized database of actions.
-3. **Execution**: When a user request matches a stored intent, the AI agent directly interacts with the corresponding web service to execute the action.
-4. **Compliance and Security**: The AI agent adheres to rate limits, billing requirements, and authentication methods as outlined in the collected intent data.
-5. **Response Handling**: Results from the execution are processed and returned to the user.
+   {
+     "intent_uid": "ecommerce.com:SearchProducts:v1",
+     "parameters": {
+       "query": "laptops"
+     }
+   }
+   ```
 
-**Benefits:**
+   **Example Response**:
 
-- **Scalability**: Decentralization avoids the bottlenecks of a central system, allowing scalability across millions of AI agents and web services.
-- **No Single Point of Failure**: Since intent information is distributed, the system remains robust even if some agents or services encounter issues.
-- **Privacy and Ownership**: Web services maintain control over their intent data, reducing concerns about data privacy and centralization.
-- **Flexible and Adaptable**: AI agents can quickly adapt to new services or changes in existing ones without waiting for updates in a central repository.
+   ```json
+   {
+     "products": [
+       {
+         "product_id": "123",
+         "name": "Gaming Laptop",
+         "price": 1500
+       },
+       {
+         "product_id": "124",
+         "name": "Ultrabook",
+         "price": 1200
+       }
+     ],
+     "total_results": 2
+   }
+   ```
 
-**Challenges:**
+### 5.2 Unique Intent Identifier (UID) Format
 
-- **Inconsistent Data**: Without centralized control, there may be variations in how web services present their intent data, leading to potential inconsistencies. Adherence to the UIM protocol can help mitigate this issue.
-- **Higher Complexity for AI Agents**: Each agent must handle crawling, data parsing, security, and compliance on its own, increasing the complexity of individual agents.
-- **Maintenance Overhead**: AI agents need to frequently crawl and update intent information to stay current, which can be resource-intensive.
+As detailed in [Section 3.1](#31-intents), the UID format is crucial for unique identification.
 
-### **Comparative Evaluation of Both Approaches**
+### 5.3 Intent Metadata
 
-1. **Centralized Repository (Man-in-the-Middle)**
-   - **Pros**: Streamlined management, consistent data structure, enhanced security, clear monetization strategy.
-   - **Cons**: Scalability issues, single point of failure, potential data privacy concerns.
+Metadata provides detailed information about an intent, helping AI agents understand how to interact with it.
 
-2. **Decentralized Crawling by AI Agents**
-   - **Pros**: Scalability, robust against failures, privacy-friendly, adaptable to changes.
-   - **Cons**: Potential inconsistencies, complex management for AI agents, resource-intensive maintenance.
+**Fields**:
 
-### **Strategic Recommendations:**
+- `intent_uid`
+- `intent_name`
+- `description`
+- `input_parameters`
+- `output_parameters`
+- `endpoint`
+- `tags`
+- `service_info`
 
-- **Use Centralized Approach**: If the primary goal is to maintain strict oversight, enforce security protocols, and ensure a standardized user experience across all AI agents and web services.
-- **Adopt Decentralized Approach**: If scalability, resilience, and data privacy are paramount, particularly in environments where rapid adaptation and autonomy are critical.
+### 5.4 Discovery Through DNS TXT Records and `agents.json` Files
 
-![Architecture comparison](images/solution-comparison.png)
+#### Purpose
 
-By understanding these architectural nuances, stakeholders can better align the UIM protocol’s deployment strategy with their operational needs, ensuring efficient and effective integration between AI agents and web services.
+Facilitate service discovery in a decentralized architecture.
 
-## UIM Protocol Specification
+#### DNS TXT Records
 
-Check out the proposed specification here: [Unified Intent Mediator Specification](unified-intent-mediator-api-specification.md). It goes into details about the suggested endpoints, data structures, security measures, billing, policy compliance, and more.
+Provide quick discovery of services and pointers to detailed information.
 
-## Future Work and Expansion
+**Fields**:
 
-The Unified Intent Mediator protocol represents a significant step forward in facilitating efficient and seamless interactions between AI agents and web services. However, there is substantial potential for further development and expansion. Future work could focus on several key areas to enhance the protocol's capabilities and drive wider adoption.
+1. **uim-agents-file**: URL of the `agents.json` file.
+2. **uim-api-discovery**: URL of the API discovery endpoint.
+3. **uim-policy-file**: URL of the ODRL policy file.
 
-### Support for More Complex Interactions
+**Example Record**:
 
-As AI technology continues to advance, there will be a growing demand for the API to support more complex interactions. This could involve enabling multi-step processes, where AI agents can chain multiple intents together to complete sophisticated tasks (multi-tool and multi-step scenarios):
+```txt
+uim-agents-file=https://example.com/agents.json
+uim-api-discovery=https://api.example.com/intents/search
+uim-policy-file=https://example.com/uim-policy.json
+```
 
-- **Multi-Step Intents:** Future iterations of the UIM protocol could include support for multi-step intents, where AI agents execute a sequence of actions as part of a single, cohesive operation. This would enable more complex workflows, such as initiating a transaction, verifying details, and completing the payment, all within one unified process.  
-- **Context-Aware Interactions:** Enhancing the UIM protocol to support context-aware interactions would allow AI agents to adjust their behavior based on the current state or environment. For example, an AI agent could modify its requests based on user preferences, historical data, or real-time conditions.
+#### `agents.json` Files
 
-![Future developments](images/future-development.png)
+Contain detailed information about the service and available intents.
 
-**Examples of Complex Interactions:**
+**Structure**:
 
-- **E-commerce**: An AI agent could handle the entire purchase process, from searching for a product, comparing prices across multiple platforms, selecting the best deal, and completing the checkout process, all in one seamless interaction.  
-- **Healthcare**: An AI agent could book an appointment, retrieve medical records, and even arrange for prescription deliveries by interacting with multiple intents across different healthcare services or providers.
-- **Finance**: An AI agent could manage a user’s entire investment portfolio, from analyzing market trends, selecting suitable stocks, and executing trades, all within a single interaction.  
-- **Travel Planning**: An AI agent could plan an entire trip by booking flights, hotels, and rental cars, while also arranging for local tours and activities through a series of coordinated intents.
+- **service-info**
+- **intents**
+- **uim-public-key**
+- **uim-policy-file**
+- **uim-api-discovery**
+- **uim-compliance**
+- **uim-license**
 
-### Integration of Advanced AI Capabilities
+**Complete `agents.json` File Example** is provided in [Appendix B](#b-complete-agentsjson-file-example).
 
-To further enhance the functionality of the Unified Intent Mediator protocol, integrating advanced AI capabilities such as natural language processing (NLP), machine learning (ML), and predictive analytics would be highly beneficial.
+### 5.5 Policy Adherence Tokens (PATs) and ODRL Integration
 
-**Advanced AI Capabilities:**
+#### Purpose
 
-- **Natural Language Processing (NLP)**: Integrating NLP can allow AI agents to understand and process user intents expressed in natural language, making interactions more intuitive and user-friendly.  
-- **Machine Learning (ML)**: ML algorithms can be used to predict user preferences and optimize interactions. For instance, an AI agent could learn a user’s shopping habits and proactively suggest products or services.  
-- **Predictive Analytics**: By analyzing historical data, AI agents can anticipate user needs and offer proactive solutions. For example, an AI agent could predict when a user might need to reorder a product based on past purchasing patterns.
+Ensure secure, compliant interactions by encapsulating policies, permissions, and obligations.
 
-![AI Capabilities](images/ai-capabilities.png)
+#### ODRL Integration
 
-### Exploring Partnerships with Major Web Services and AI Platforms
+Utilize the **Open Digital Rights Language (ODRL)** to define policies.
 
-Partnerships with major web services and AI platforms can significantly accelerate the adoption and innovation of the Unified Intent Mediator protocol. Collaborating with industry leaders can provide access to a broader range of services and enhance the protocol's capabilities and reach.
+**Key Concepts**:
 
-**Potential Partnerships:**
+- **Policy**: Represents the agreement between AI agents and web services, detailing permissions, prohibitions, and obligations.
+- **Permission**: Specifies allowed actions for AI agents.
+- **Prohibition**: Specifies actions that AI agents are not allowed to perform.
+- **Obligation**: Specifies actions that AI agents must perform under certain conditions.
+- **Asset**: The resource or service the policy applies to.
+- **Party**: The entities involved in the policy (e.g., AI agents and web services).
 
-- **Industry Collaborations:** Forming strategic partnerships with key industry players can accelerate the adoption and expansion of the UIM protocol. These collaborations could involve co-developing standards, integrating UIM with existing platforms, or launching joint initiatives to promote the protocol’s benefits.  
-- **Open Source Community Engagement:** Engaging with the open-source community can drive innovation and improvement within the UIM protocol. By encouraging contributions from developers worldwide, the protocol can evolve more rapidly and address a broader range of use cases.
+**Sample ODRL Policy** is provided in [Appendix C](#c-sample-odrl-policy).
 
-![Potential partnerships](images/adoption.png)
+#### PAT Issuance Workflow
 
-### Development of a Developer Ecosystem
+1. **Policy Retrieval and Agreement**:
+   - AI agent retrieves the ODRL policy from the specified endpoint.
+   - AI agent digitally signs the policy using its private key and sends it to the web service alongside its public key to request a PAT.
 
-Creating a vibrant developer ecosystem around the Unified Intent Mediator protocol can foster innovation and drive the creation of new intents and services. By providing comprehensive documentation, SDKs, and developer tools, the protocol can attract a community of developers eager to build on the concept.
+2. **PAT Issuance**:
+   - Web service verifies the AI agent's signature and agreement.
+   - Web service issues a PAT, which includes the agreed policy details, permissions, obligations, and a validity period.
+   - The PAT is digitally signed by the web service.
 
-**Developer Ecosystem Initiatives:**
+3. **Using PAT in Requests**:
+   - AI agent includes the PAT in the `Authorization` header of each request.
+   - Web service verifies the PAT's signature and validity before processing the request.
 
-- **Comprehensive Documentation**: Offering detailed guides, tutorials, and API references to help developers understand and utilize the protocol effectively.  
-- **Software Development Kits (SDKs)**: Providing SDKs for popular programming languages to streamline the development process and make it easier for developers to integrate their services.  
-- **Developer Tools**: Creating tools for testing, debugging, and monitoring interactions can help developers build and maintain high-quality services.
+**PAT Structure**:
 
-![Developer ecosystem](images/developer-ecosystem.png)
+**Sample PAT** is provided in [Appendix D](#d-sample-pat-structure).
 
-### Expansion into New Domains
+#### Including PAT in Requests
 
-While the initial focus may be on well-established industries like e-commerce, healthcare, and finance, there is significant potential for expanding the Unified Intent Mediator protocol into new domains. Emerging sectors such as smart cities, IoT, and autonomous vehicles can greatly benefit from the protocol capabilities, but might have additional requriements and challenges. By exploring these new domains, the UIM protocol can continue to drive innovation and create new opportunities for seamless, efficient, and intelligent service integration.
+The AI agent includes the PAT in the `Authorization` header:
 
-**New Domains for Expansion:**
+```txt
+Authorization: Bearer PAT-12345
+```
 
-- **Smart Cities**: Integrating with smart city infrastructure to provide AI-driven services like intelligent traffic management, waste collection, and public safety monitoring.  
-- **Internet of Things (IoT)**: Enabling AI agents to interact with IoT devices for home automation, industrial monitoring, and environmental sensing.  
-- **Autonomous Vehicles**: Facilitating interactions between AI agents and autonomous vehicle systems for tasks like route planning, maintenance scheduling, and real-time traffic updates.
+#### Verification Process
 
-### Summary
+1. **Extract PAT**: Web service extracts the PAT from the request header.
+2. **Verify Signature**: Web service verifies the PAT's signature using its public key.
+3. **Check Validity**: Web service checks the PAT's validity period.
+4. **Authorize Request**: Web service checks if the PAT permissions match the requested action.
+5. **Process Request**: If valid, the web service processes the request; otherwise, it rejects it.
 
-The future work and expansion of the Unified Intent Mediator API hold immense potential to revolutionize AI-agent interactions with web services. By supporting more complex interactions, integrating advanced AI capabilities, exploring strategic partnerships, fostering a developer ecosystem, and expanding into new domains, the protocol can continue to drive innovation and create new opportunities for seamless, efficient, and intelligent service integration. The success of these future efforts will depend on collaboration, innovation, and a commitment to maintaining the protocol’s foundational principles of standardization, security, and scalability.
+### 5.6 Incorporating Billing Information into PATs
 
-![Future development timeline](images/future-timeline.png)
+#### Purpose
+
+Simplifies transactions by including billing details within the PAT.
+
+#### Workflow
+
+1. **Billing Information Submission**: AI agent submits billing info during PAT request.
+2. **PAT Issuance**: PAT includes billing details.
+3. **Automated Billing**: Web service processes payments automatically as intents are executed.
+
+**Benefits**:
+
+- Streamlined process.
+- Automated billing.
+- Improved user experience.
+- Enhanced compliance.
+
+### 5.7 Service Management APIs
+
+APIs that allow web services to manage their registration, including creating, updating, and deleting services.
+
+#### Register Service
+
+- **Endpoint**: `/api/services`
+- **Method**: `POST`
+- **Description**: Registers a new service.
+
+**Request Body**:
+
+```json
+{
+  "service_name": "E-commerce Platform",
+  "service_url": "https://api.ecommerce.com",
+  "description": "Provides e-commerce functionalities",
+  "service_terms_of_service_url": "https://api.ecommerce.com/terms",
+  "service_privacy_policy_url": "https://api.ecommerce.com/privacy",
+  "service_logo_url": "https://api.ecommerce.com/logo.png"
+}
+```
+
+#### Update Service
+
+- **Endpoint**: `/api/services/{service_id}`
+- **Method**: `PUT`
+- **Description**: Updates an existing service.
+
+#### Delete Service
+
+- **Endpoint**: `/api/services/{service_id}`
+- **Method**: `DELETE`
+- **Description**: Deletes a registered service.
+
+#### Retrieve Service
+
+- **Endpoint**: `/api/services/{service_id}`
+- **Method**: `GET`
+- **Description**: Retrieves the details of a registered service.
+
+### 5.8 Intent Management APIs
+
+APIs for web services to manage their intents.
+
+#### List All Intents for a Service
+
+- **Endpoint**: `/api/services/{service_id}/intents`
+- **Method**: `GET`
+- **Description**: Lists all intents for a specific service.
+
+#### Retrieve Intent Details
+
+- **Endpoint**: `/api/intents/{intent_uid}`
+- **Method**: `GET`
+- **Description**: Retrieves the details of a specific intent.
+
+#### Create Intent
+
+- **Endpoint**: `/api/services/{service_id}/intents`
+- **Method**: `POST`
+- **Description**: Creates a new intent for a service.
+
+**Request Body**:
+
+```json
+{
+  "intent_uid": "ecommerce.com:GetProductDetails:v1",
+  "intent_name": "GetProductDetails",
+  "description": "Fetches detailed information about a specific product using its unique identifier",
+  "input_parameters": [
+    {"name": "product_id", "type": "string", "required": true}
+  ],
+  "output_parameters": [
+    {"name": "product_details", "type": "object", "required": true}
+  ],
+  "endpoint": "https://api.ecommerce.com/products/details",
+  "tags": ["e-commerce", "product", "details"]
+}
+```
+
+#### Update Intent
+
+- **Endpoint**: `/api/intents/{intent_uid}`
+- **Method**: `PUT`
+- **Description**: Updates the details of an existing intent.
+
+#### Delete Intent
+
+- **Endpoint**: `/api/intents/{intent_uid}`
+- **Method**: `DELETE`
+- **Description**: Deletes an existing intent.
+
+## 6. General API Guidelines and Standards
+
+### 6.1 Pagination
+
+To handle large data sets, list endpoints support pagination.
+
+#### Parameters
+
+- **page**: Page number (default: 1).
+- **page_size**: Items per page (default: 10).
+
+**Example Request**:
+
+```curl
+GET /api/services/12345/intents?page=2&page_size=5
+```
+
+#### Response Headers
+
+- **X-Total-Count**
+- **X-Total-Pages**
+- **X-Current-Page**
+- **X-Page-Size**
+
+### 6.2 Security and Compliance
+
+- **Authentication**: Use OAuth 2.0 for secure authentication.
+- **Encryption**: All communications MUST use HTTPS.
+- **Compliance**: Adhere to regulations like GDPR and CCPA.
+- **Data Protection**: Implement data encryption at rest and in transit.
+
+### 6.3 Monitoring and Analytics
+
+- **Real-time Monitoring**: Provide dashboards for API usage and performance.
+- **Logging and Alerts**: Implement systems to track activity and respond to issues.
+- **Audit Trails**: Maintain logs for compliance and troubleshooting.
+
+### 6.4 Scalability
+
+- **Caching**: Implement caching mechanisms for frequently accessed data.
+- **Load Balancing**: Distribute traffic efficiently to handle high volumes.
+- **Auto-scaling**: Utilize auto-scaling to adjust resources based on demand.
+
+### 6.5 Error Management Strategy
+
+#### Comprehensive Error Handling Approach
+
+- **Layered Error Handling**:
+  1. **Client-Side Errors (4xx)**: Issues with the client's request.
+  2. **Server-Side Errors (5xx)**: Issues on the server side.
+  3. **Protocol-Level Errors**: Specific to UIM protocol operations.
+
+#### Standard Error Response Structure
+
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Descriptive error message.",
+    "details": {
+      "additional": "context-specific information"
+    }
+  }
+}
+```
+
+**Detailed error codes and messages** are provided in [Appendix A](#a-standard-error-codes-and-messages).
+
+#### Error Handling Guidelines
+
+- **Consistent Structure**: Ensure all error responses follow the standard format.
+- **Clear Messages**: Provide descriptive and actionable error messages.
+- **Security Considerations**: Avoid exposing sensitive internal details.
+- **Documentation**: Document all error codes and scenarios.
+
+## 7. Practical Examples and Use Cases
+
+### 7.1 E-commerce Platform Integration
+
+**Scenario**: An AI shopping assistant helps users find products across multiple e-commerce platforms.
+
+**Workflow**:
+
+1. **Discovery**: The AI agent searches for the `SearchProducts` intent across registered e-commerce services.
+2. **Policy Agreement**: The agent retrieves the ODRL policy and obtains a PAT from each service.
+3. **Execution**: The agent executes the `SearchProducts` intent with user-provided criteria.
+4. **Aggregation**: Results from multiple platforms are aggregated and presented to the user.
+5. **Purchase**: The user selects a product, and the agent uses the `PlaceOrder` intent to complete the purchase.
+
+![Ecommerce Example](images/ecommerce-example.png)
+
+**Benefits**:
+
+- **User Convenience**: One-stop shop across multiple platforms.
+- **Service Monetization**: E-commerce platforms gain additional sales channels.
+
+### 7.2 Real Estate Data Retrieval
+
+**Scenario**: A real estate analytics tool aggregates property data for market analysis.
+
+**Workflow**:
+
+1. **Discovery**: The AI agent discovers real estate services offering the `SearchProperty` intent.
+2. **Policy Agreement**: The agent agrees to policies and obtains PATs.
+3. **Data Retrieval**: Executes `SearchProperty` intents to gather property listings.
+4. **Analysis**: Aggregates and analyzes data to provide market insights.
+5. **Compliance**: Ensures data usage complies with service policies.
+
+![Real Estate Example](images/realestate-example.png)
+
+**Benefits**:
+
+- **Comprehensive Data**: Access to diverse property listings.
+- **Enhanced Analytics**: Improved market analysis capabilities.
+
+## 8. Security Considerations
+
+- **Authentication and Authorization**: AI agents MUST authenticate using secure methods like OAuth 2.0. Web services MUST verify PATs and ensure that AI agents have the necessary permissions.
+- **Data Integrity**: All tokens and sensitive data SHOULD be digitally signed to prevent tampering.
+- **Confidentiality**: Sensitive information, including billing details, MUST be encrypted and securely stored.
+- **Replay Attacks**: PATs SHOULD include nonce values or timestamps to prevent replay attacks.
+- **Input Validation**: Web services MUST validate all inputs to prevent injection attacks.
+
+## 9. Privacy Considerations
+
+- **Data Minimization**: AI agents and web services SHOULD minimize the collection and storage of personal data.
+- **Compliance**: Adherence to regulations like GDPR and CCPA is REQUIRED where applicable.
+- **User Consent**: When personal data is involved, explicit user consent MUST be obtained.
+- **Transparency**: Privacy policies SHOULD be clearly communicated through the `service_privacy_policy_url`.
+- **Anonymization**: Where possible, data SHOULD be anonymized to protect user identities.
+
+## 10. Appendix
+
+### A. Standard Error Codes and Messages
+
+#### Client-Side Errors (4xx)
+
+| Error Code             | Message                                                    | Description                                |
+|------------------------|------------------------------------------------------------|--------------------------------------------|
+| INVALID_PARAMETER      | "The parameter '{param}' is required."                     | Missing or invalid parameter.              |
+| UNAUTHORIZED           | "Unauthorized access. Authentication is required."         | Missing or invalid authentication token.   |
+| FORBIDDEN              | "Access to this resource is forbidden."                    | Insufficient permissions.                  |
+| NOT_FOUND              | "The requested resource '{resource}' was not found."       | Resource not found.                        |
+| METHOD_NOT_ALLOWED     | "The HTTP method '{method}' is not allowed for this endpoint." | Unsupported HTTP method.                   |
+| CONFLICT               | "The request could not be completed due to a conflict."    | Resource conflict.                         |
+| UNSUPPORTED_MEDIA_TYPE | "The media type '{type}' is not supported."                | Unsupported content type.                  |
+
+#### Server-Side Errors (5xx)
+
+| Error Code              | Message                                                   | Description                      |
+|-------------------------|-----------------------------------------------------------|----------------------------------|
+| INTERNAL_SERVER_ERROR   | "An unexpected error occurred on the server."             | Generic server error.            |
+| SERVICE_UNAVAILABLE     | "The service is temporarily unavailable."                 | Server down or overloaded.       |
+| GATEWAY_TIMEOUT         | "The server did not receive a timely response."           | Upstream server timeout.         |
+| NOT_IMPLEMENTED         | "The requested functionality is not implemented."         | Feature not supported.           |
+
+#### Protocol-Level Errors
+
+| Error Code              | Message                                                   | Description                                |
+|-------------------------|-----------------------------------------------------------|--------------------------------------------|
+| INTENT_EXECUTION_FAILED | "The intent '{intent}' could not be executed."            | Execution failure due to various reasons.  |
+| INTENT_NOT_SUPPORTED    | "The intent '{intent}' is not supported by this service." | Intent not recognized or supported.        |
+| VERSION_CONFLICT        | "The intent version '{version}' is not supported."        | Version mismatch.                          |
+| INTENT_DEPRECATED       | "The intent '{intent}' has been deprecated."              | Intent no longer available.                |
+
+### B. Complete `agents.json` File Example
+
+```json
+{
+  "service-info": {
+    "name": "fakerealestate.com",
+    "description": "Provides property listings and real estate data.",
+    "service_url": "https://fakerealestate.com",
+    "service_logo_url": "https://fakerealestate.com/logo.png",
+    "service_terms_of_service_url": "https://fakerealestate.com/terms",
+    "service_privacy_policy_url": "https://fakerealestate.com/privacy"
+  },
+  "intents": [
+    {
+      "intent_uid": "fakerealestate.com:SearchProperty:v1",
+      "intent_name": "SearchProperty",
+      "description": "Search properties based on criteria",
+      "input_parameters": [
+        {"name": "location", "type": "string", "required": true, "description": "City or ZIP code"},
+        {"name": "min_price", "type": "integer", "required": false, "description": "Minimum price"},
+        {"name": "max_price", "type": "integer", "required": false, "description": "Maximum price"},
+        {"name": "property_type", "type": "string", "required": false, "description": "Type of property"}
+      ],
+      "output_parameters": [
+        {"name": "properties", "type": "array", "description": "List of matching properties"},
+        {"name": "total_results", "type": "integer", "description": "Total number of results"}
+      ],
+      "endpoint": "https://fakerealestate.com/api/execute/SearchProperty",
+      "tags": ["real estate", "search"],
+      "rate_limit": "1000/hour",
+      "price": "0.01 USD"
+    }
+    // Additional intents can be added here
+  ],
+  "uim-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQE...",
+  "uim-policy-file": "https://fakerealestate.com/uim-policy.json",
+  "uim-api-discovery": "https://fakerealestate.com/uim/intents/search",
+  "uim-compliance": {
+    "standards": ["ISO27001", "GDPR"],
+    "regional-compliance": {
+      "EU": "GDPR",
+      "US-CA": "CCPA"
+    },
+    "notes": "Data is encrypted in transit and at rest."
+  },
+  "uim-license": "CC-BY-NC-SA-4.0"
+}
+```
+
+### C. Sample ODRL Policy
+
+```json
+{
+  "@context": "http://www.w3.org/ns/odrl.jsonld",
+  "uid": "http://fakerealestate.com/policy/12345",
+  "type": "Set",
+  "permission": [
+    {
+      "target": "http://fakerealestate.com/api/intents",
+      "action": "execute",
+      "constraint": [
+        {
+          "leftOperand": "http://fakerealestate.com/vocab/rateLimit",
+          "operator": "lte",
+          "rightOperand": 1000,
+          "unit": "http://fakerealestate.com/vocab/hour"
+        }
+      ],
+      "duty": [
+        {
+          "action": "pay",
+          "target": "http://fakerealestate.com/vocab/intentPrice",
+          "amount": 0.01,
+          "unit": "http://fakerealestate.com/vocab/USD"
+        }
+      ]
+    }
+  ],
+  "prohibition": [
+    {
+      "target": "http://fakerealestate.com/api/intents",
+      "action": "exceedRateLimit"
+    }
+  ],
+  "obligation": [
+    {
+      "action": "signPayload",
+      "assignee": "http://aiagent.com/agent/1",
+      "target": "http://fakerealestate.com/vocab/payload",
+      "constraint": [
+        {
+          "leftOperand": "http://fakerealestate.com/vocab/publicKey",
+          "operator": "use",
+          "rightOperand": "MIIBIjANBgkqh..."
+        }
+      ]
+    }
+  ],
+  "party": [
+    {
+      "function": "assigner",
+      "identifier": "http://fakerealestate.com"
+    },
+    {
+      "function": "assignee",
+      "identifier": "http://aiagent.com/agent/1"
+    }
+  ],
+  "asset": "http://fakerealestate.com/api/intents"
+}
+```
+
+### D. Sample PAT Structure
+
+```json
+{
+  "pat": {
+    "uid": "pat-12345",
+    "issued_to": "ai-agent-1",
+    "issued_by": "fakerealestate.com",
+    "policy_reference": "http://fakerealestate.com/policy/12345",
+    "permissions": ["execute:intent/SearchProperty"],
+    "obligations": ["pay:0.01 USD per intent"],
+    "billing_info": {
+      "payment_method": "credit_card",
+      "billing_address": "123 AI Street, Tech City",
+      "currency": "USD"
+    },
+    "valid_from": "2024-01-01T00:00:00Z",
+    "valid_to": "2024-12-31T23:59:59Z"
+  },
+  "signature": "Base64-encoded-digital-signature"
+}
+```
+
+### E. Sample API Requests and Responses
+
+#### Intent Discovery Request
+
+```curl
+GET /api/intents/search?intent_name=SearchProperty
+```
+
+#### Intent Discovery Response
+
+```json
+{
+  "intents": [
+    {
+      "service_name": "Fake Real Estate",
+      "intent_name": "SearchProperty",
+      "intent_uid": "fakerealestate.com:SearchProperty:v1",
+      "description": "Search properties based on criteria",
+      "input_parameters": [
+        {"name": "location", "type": "string", "required": true}
+      ],
+      "output_parameters": [
+        {"name": "properties", "type": "array", "description": "List of properties"}
+      ],
+      "endpoint": "https://fakerealestate.com/api/execute/SearchProperty",
+      "tags": ["real estate", "search"]
+    }
+  ]
+}
+```
+
+#### Execute Intent Request
+
+```json
+POST /api/intents/execute
+Authorization: Bearer PAT-12345
+Content-Type: application/json
+
+{
+  "intent_uid": "fakerealestate.com:SearchProperty:v1",
+  "parameters": {
+    "location": "New York",
+    "min_price": 500000,
+    "max_price": 1000000
+  }
+}
+```
+
+#### Execute Intent Response
+
+```json
+{
+  "properties": [
+    {
+      "property_id": "NYC123",
+      "address": "123 Main St, New York, NY",
+      "price": 750000,
+      "property_type": "Apartment"
+    },
+    {
+      "property_id": "NYC124",
+      "address": "456 Broadway, New York, NY",
+      "price": 850000,
+      "property_type": "Condo"
+    }
+  ],
+  "total_results": 2
+}
+```
+
+### F. Visual Aids
+
+#### High Level System Architecture Diagram
+
+1. **Centralized Architecture**:
+
+   - **AI Agent** interacts with the **Central Repository** for discovery, policy agreement, and execution.
+   - **Central Repository** communicates with **Web Services** to forward execution requests and receive responses.
+  ![Centralized flow](images/central-arch-box.png)
+
+2. **Decentralized Architecture**:
+
+   - **AI Agent** discovers **Web Services** via DNS TXT records and `agents.json` files.
+   - **AI Agent** communicates directly with **Web Services** for policy agreement and intent execution.
+  ![Decentralized flow](images/decentral-arch-box.png)
+
+3. **Hybrid Approach**:
+
+   - **AI Agent** uses the **Central Repository** for intent discovery.
+   - **AI Agent** interacts directly with **Web Services** for policy agreement and execution.
+  ![Hybrid flow](images/hybrid-arch-box.png)
+
+## End Notes
+
+- *The examples and diagrams provided are for illustrative purposes. Implementers should tailor the protocol to their specific needs while adhering to the core principles outlined in this specification.*
+- *The UIM is an open standard and welcomes contributions and feedback from the community. Please refer to the [contribution guidelines](CONTRIBUTING.md) for more information on how to get involved.*
