@@ -11,7 +11,7 @@
 
 ## Abstract
 
-The [protocol specification section](unified-intent-mediator-api-specification.md) of the Unified Intent Mediator (UIM) details the The Unified Intent Mediator (UIM) protocol defines a standardized framework for AI agents to interact with web services through well-defined intents, metadata, and execution methods. By introducing consistency and security in these interactions, UIM enhances efficiency, scalability, and reliability for AI-driven applications. This specification provides comprehensive guidelines for implementing the UIM protocol, ensuring interoperability, security, and compliance across different systems.
+The Unified Intent Mediator (UIM) protocol defines a standardized framework for AI agents to interact with web services through well-defined intents, metadata, and execution methods. By introducing consistency and security in these interactions, UIM enhances efficiency, scalability, and reliability for AI-driven applications. This specification provides comprehensive guidelines for implementing the UIM protocol, ensuring interoperability, security, and compliance across different systems.
 
 Key components include:
 
@@ -1040,3 +1040,7 @@ Content-Type: application/json
 
 - *The examples and diagrams provided are for illustrative purposes. Implementers should tailor the protocol to their specific needs while adhering to the core principles outlined in this specification.*
 - *The UIM is an open standard and welcomes contributions and feedback from the community. Please refer to the [contribution guidelines](CONTRIBUTING.md) for more information on how to get involved.*
+
+## License
+
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
