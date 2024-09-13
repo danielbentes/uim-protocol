@@ -1,7 +1,12 @@
-# services/dns_utils.py
+# app/services/dns_utils.py
 
 import dns.resolver
+from functools import lru_cache
+import logging
 
+logger = logging.getLogger(__name__)
+
+@lru_cache(maxsize=1024)
 def get_agents_json_url_from_dns(domain):
     """Retrieve agents.json URL from DNS TXT records."""
     try:
@@ -11,5 +16,5 @@ def get_agents_json_url_from_dns(domain):
             if 'uim-agents-file=' in txt_record:
                 return txt_record.split('=')[1]
     except Exception as e:
-        print(f"DNS lookup failed for {domain}: {e}")
+        logger.error(f"DNS lookup failed for {domain}: {e}")
     return None

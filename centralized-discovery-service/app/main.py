@@ -1,13 +1,16 @@
 # app/main.py
 
 from fastapi import FastAPI
-from routers import discovery, search
+from app.routers import discovery, search
 from app.database import engine, Base
-from app.services.crawler import start_crawling
+from app.utils.logging import setup_logging
 
 def create_app():
     """Initialize FastAPI app and include routers."""
     app = FastAPI(title="Centralized Intent Discovery Service")
+
+    # Set up logging
+    setup_logging()
 
     # Create database tables
     Base.metadata.create_all(bind=engine)
@@ -15,12 +18,6 @@ def create_app():
     # Include routers
     app.include_router(discovery.router)
     app.include_router(search.router)
-
-    # Start the crawler when the app starts
-    @app.on_event("startup")
-    async def startup_event():
-        """Event handler for startup event."""
-        await start_crawling()
 
     return app
 

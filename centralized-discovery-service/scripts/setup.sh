@@ -14,5 +14,11 @@ pip install --upgrade pip
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the application
-uvicorn app.main:app --reload
+# Export database URL (update with your own credentials)
+export DATABASE_URL='postgresql://user:password@localhost/uim_db'
+
+# Run database migrations (if any)
+# alembic upgrade head  # Uncomment if using Alembic for migrations
+
+# Notify the user
+echo "Setup complete. You can now run the application using 'uvicorn app.main:app --reload'."

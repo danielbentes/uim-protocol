@@ -1,9 +1,12 @@
 # app/config.py
 
-import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-class Settings:
+class Settings(BaseSettings):
     """Configuration settings for the application."""
-    DATABASE_URL: str = os.getenv('DATABASE_URL', 'postgresql://user:password@localhost/uim_db')
+    DATABASE_URL: str
+    LOG_LEVEL: str = "INFO"
+
+    model_config = SettingsConfigDict(env_file=".env")
 
 settings = Settings()
