@@ -1,4 +1,4 @@
-# Unified Intent Mediator API Specification
+# Unified Intent Mediator (UIM) Technical Exploration
 
 The Unified Intent Mediator (UIM) specification provides a standardized protocol for seamless and secure interactions between AI agents and web services. By following this specification, developers can create interoperable solutions that enhance functionality, efficiency, and user experience. Through community collaboration and continuous improvement, the UIM aims to become the industry standard for AI-driven web service interactions.
 
