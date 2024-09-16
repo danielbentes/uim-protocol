@@ -1,3 +1,7 @@
+<div style="text-align: center;">
+  <img src="images/logo.png" alt="logo" width="100" height="100">
+</div>
+
 # Unified Intent Mediator (UIM) Protocol Specification
 
 **Version:** 1.0  
