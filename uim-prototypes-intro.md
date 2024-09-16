@@ -1,6 +1,8 @@
 # Implementation Guide based on UIM Mock Agent and Mock Web Service
 
-This guide will walk you through the setup and usage of the UIM Mock Agent and Mock Web Service. The UIM Mock Agent simulates an AI agent interacting with a mock web service according to the Unified Intent Mediator (UIM) specification. It demonstrates the discovery and execution of intents, issuance of Policy Adherence Tokens (PATs), policy retrieval and signing, and secure key management for multiple web services.
+This guide will walk you through the setup and usage of the UIM Mock Agent and Mock Web Service. The UIM Mock Agent simulates an AI agent interacting with a mock web service according to the Unified Intent Mediator (UIM) specification. It demonstrates the discovery and execution of intents, issuance of Policy Adherence Tokens (PATs), policy retrieval and signing, and secure key management for multiple web services. 
+
+By following the steps outlined, you can simulate the discovery and execution of intents, manage keys, retrieve and sign policies, and handle PAT issuance. This setup demonstrates the core functionalities of the Unified Intent Mediator (UIM) specification in a mock environment.
 
 ## Prerequisites
 
@@ -138,7 +140,3 @@ python src/cli_interface.py
   - Select "Execute Intent" (Option 5)
   - Enter the intent UID (e.g., fakerealestate.com:searchProperty:v1)
   - Enter the required parameters (e.g., location, min_price, max_price, property_type)
-
-## Conclusion
-
-This guide provides a comprehensive overview of setting up and using the UIM Mock Agent and Mock Web Service. By following the steps outlined, you can simulate the discovery and execution of intents, manage keys, retrieve and sign policies, and handle PAT issuance. This setup demonstrates the core functionalities of the Unified Intent Mediator (UIM) specification in a mock environment.

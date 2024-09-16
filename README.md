@@ -2,16 +2,28 @@
   <img src="images/logo.png" alt="logo" width="100" height="100">
 </div>
 
-# Unified Intent Mediator (UIM) Protocol Specification
-
-**Version:** 1.0  
-**Date:** September 30, 2024
+# The Unified Intent Mediator Protocol
 
 ## Getting started
 
 1. Get familiar with the [concepts and motivations](uim-concept.md) behind the UIM protocol or just read the specification below.
-2. Dive into the [technical exploration](uim-technical-exploration.md) of the UIM protocol to understand and explore the details of the protocol.
-3. Explore the [prototypes implementations](uim-prototypes-intro.md) to see the UIM protocol in action.
+2. Dive into the [technical exploration](uim-technical-exploration.md) of the UIM protocol to understand and explore the details and technical choices behind the protocol.
+3. Explore the [prototypes implementations](uim-prototypes-intro.md) to see the UIM protocol in action (WIP)
+
+## Get Involved: We Need Your Feedback
+
+We’re inviting developers, AI providers, service operators, and tech enthusiasts to review the draft specification, test the implementation, and share feedback. Your input is crucial to refining and improving the protocol.
+
+### How to Contribute
+
+1. Review the Draft Proposal: Check out the draft specification and explore the protocol’s design and implementation.
+2. Join the Discussion: Start a conversation in the Discussions tab. We’d love to hear your thoughts on the protocol’s design, potential use cases, or any concerns.
+3. Raise Issues: Found a bug or have suggestions? Open an Issue to let us know or contribute directly by submitting a Pull Request. See our [Contributing Guidelines](CONTRIBUTING.md) for more information.
+4. Share the Word: Help us spread the word about the UIM protocol by sharing this repository with your network. Write a blog post, tweet, or share the project with your colleagues. We appreciate your support!
+
+---
+**Version:** 0.1 (draft proposal)  
+**Date:** September 30, 2024
 
 ## Abstract
 
@@ -74,7 +86,7 @@ Key components include:
     - [C. Sample ODRL Policy](#c-sample-odrl-policy)
     - [D. Sample PAT Structure](#d-sample-pat-structure)
     - [E. Sample API Requests and Responses](#e-sample-api-requests-and-responses)
-    - [F. Visual Aids](#f-visual-aids)
+    - [F. High Level System Architecture Diagram](#f-high-level-system-architecture-diagram)
 
 ## 1. Introduction
 
@@ -99,12 +111,12 @@ As Artificial Intelligence (AI) technology advances, there is a growing need for
    - **Data Formats**: Multiple data formats necessitate different parsers.
 
 4. **Limited Access to Deep Functionality**
-   - **Restricted Features**: Inability to access advanced functionalities due to API limitations.
+   - **Restricted Features**: Inability to access advanced functionalities due to API and/or data limitations.
    - **Inefficient Automation**: Hinders the development of sophisticated AI capabilities.
 
 5. **Security and Compliance Challenges**
    - **Complex Authentication**: Varied authentication mechanisms complicate integration.
-   - **Regulatory Compliance**: Navigating data protection laws like GDPR is challenging.
+   - **Regulatory Compliance**: Navigating data protection laws like GDPR or copyright issues is challenging.
 
 ![Challenges in AI-Agent interactions with web services](images/challenges-spec.png)
 
@@ -120,7 +132,7 @@ The Unified Intent Mediator (UIM) protocol addresses these challenges by introdu
 
 ### 1.3 Out of Scope
 
-While the Unified Intent Mediator (UIM) Protocol Specification aims to provide a comprehensive framework for AI agents to interact with web services, certain aspects are intentionally excluded to maintain focus and clarity. The following elements are not within the scope of this specification:
+While the Unified Intent Mediator (UIM) Protocol Specification aims to provide a comprehensive framework for AI agents to interact with web services, certain aspects are intentionally excluded to maintain focus and clarity. The following elements are not within the scope of this specification in its current version:
 
 - **Implementation Details of AI Agents and Web Services**: The specification does not dictate the internal architecture or programming paradigms (e.g., object-oriented, functional programming) that AI agents or web services should adopt. It does not prescribe specific programming languages, frameworks, or libraries to be used in implementing the protocol.
 - **Specific Authentication and Authorization Mechanisms**: Details regarding how credentials are stored, rotated, or managed are beyond the scope of this document.
@@ -545,7 +557,7 @@ Simplifies transactions by including billing details within the PAT.
 #### Workflow
 
 1. **Billing Information Submission**: AI agent submits billing info during PAT request.
-2. **PAT Issuance**: PAT includes billing details.
+2. **PAT Issuance**: PAT includes the agreed policy details, permissions, obligations, and a validity period.
 3. **Automated Billing**: Web service processes payments automatically as intents are executed.
 
 **Benefits**:
@@ -557,7 +569,7 @@ Simplifies transactions by including billing details within the PAT.
 
 ### 5.7 Service Management APIs
 
-APIs that allow web services to manage their registration, including creating, updating, and deleting services.
+APIs that allow web services to manage their registration, including creating, updating, and deleting services. Used in the centralized architecture.
 
 #### Register Service
 
@@ -598,7 +610,7 @@ APIs that allow web services to manage their registration, including creating, u
 
 ### 5.8 Intent Management APIs
 
-APIs for web services to manage their intents.
+APIs for web services to manage their intents. Used in the centralized architecture.
 
 #### List All Intents for a Service
 
@@ -1018,9 +1030,7 @@ Content-Type: application/json
 }
 ```
 
-### F. Visual Aids
-
-#### High Level System Architecture Diagram
+### F. High Level System Architecture Diagram
 
 1. **Centralized Architecture**:
 

@@ -1,21 +1,5 @@
 # Concepts behind the Unified Intent Mediator (UIM) Protocol
 
-## TLDR
-
-The concept section below explains the foundational elements of the UIM protocol, focusing on key concepts like “intents,” “metadata,” and the “execute method.” It highlights the protocol’s role in enabling seamless and efficient interactions between AI agents and web services, resolving issues like inconsistent data extraction and high latency. The section also discusses the monetization opportunities that the UIM protocol creates for web services by providing structured, discoverable, and executable intents.
-
-## Concept Abstract
-
-The Unified Intent Mediator (UIM) protocol addresses the critical need for standardized interactions between AI agents and web services. UIM replaces inefficient methods like web scraping and simulated user actions with a consistent, secure, and scalable interface. This protocol enhances reliability, improves efficiency, and simplifies development for AI-driven applications.
-
-By enabling web services to expose capabilities as structured intents and allowing AI agents to seamlessly discover and execute these intents, UIM offers a scalable solution that:
-
-- Enhances automation
-- Improves user experience
-- Opens new monetization avenues for service providers
-
-UIM sets a new standard for AI-driven web service integration, from optimizing e-commerce transactions to automating complex workflows.
-
 ## Introduction
 
 As AI technology advances, the need for efficient AI agent-web service interactions has become critical. Traditional methods like web scraping and simulated browser actions are inefficient, leading to:
