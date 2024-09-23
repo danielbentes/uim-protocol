@@ -502,7 +502,7 @@ Ensure secure, compliant interactions by encapsulating policies, permissions, an
 
 #### ODRL Integration
 
-Utilize the **Open Digital Rights Language (ODRL)** to define policies.
+Utilize the **Open Digital Rights Language (ODRL)** to define policies. A comprehensive [ODRL vocabulary draft document](uim-odrl-vocab.md) is provided for the UIM protocol namespace. It defines namespaces, vocabulary terms, JSON-LD context, and policy examples. It also includes recommendations for implementers and references for further reading.
 
 **Key Concepts**:
 
