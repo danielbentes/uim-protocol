@@ -25,7 +25,7 @@ We’re inviting developers, AI providers, service operators, and tech/AI enthus
 
 ## Protocol Draft Proposal
 
-**Date:** September 30, 2024 - **Version:** 0.1
+**Date:** September 30, 2024 - **Version:** 0.2
 
 ## Abstract
 
@@ -44,6 +44,8 @@ Key components include:
 - **DNS TXT Records and agents.json Files**: Innovative methods for endpoint discovery, allowing AI agents to find and authenticate API endpoints using familiar internet protocols.
 
 - **Integration with Open Digital Rights Language (ODRL)**: Provides a structured approach to managing permissions, prohibitions, and obligations, ensuring clear and enforceable rules between AI agents and web services.
+
+- **UIM Licensing Scheme**: An alternative method to the ODRL (Open Digital Rights Language) policy for defining the permissions, conditions, and prohibitions for data returned by web services. It specifies the license under which the data returned by intents can be used according to the [UIM Licensing Scheme](uim-licensing-scheme.md).
 
 ## Table of Contents
 
@@ -157,6 +159,7 @@ While the Unified Intent Mediator (UIM) Protocol Specification aims to provide a
 - **Execution Endpoint**: The API endpoint where AI agents can execute intents.
 - **Policy Endpoint**: The API endpoint where AI agents can request PATs from web services.
 - **Open Digital Rights Language (ODRL)**: A standardized language for expressing policies governing the usage of digital content and services.
+- **UIM License**: A set of rules and conditions that govern the usage of data returned by an intent, including permissions, prohibitions, and obligations.
 
 ## 3. Key Concepts
 
@@ -469,6 +472,7 @@ Provide quick discovery of services and pointers to detailed information.
 1. **uim-agents-file**: URL of the `agents.json` file.
 2. **uim-api-discovery**: URL of the API discovery endpoint.
 3. **uim-policy-file**: URL of the ODRL policy file.
+4. **uim-license**: The UIM license for the service.
 
 **Example Record**:
 
@@ -476,6 +480,7 @@ Provide quick discovery of services and pointers to detailed information.
 uim-agents-file=https://example.com/agents.json
 uim-api-discovery=https://api.example.com/intents/search
 uim-policy-file=https://example.com/uim-policy.json
+uim-license=https://uimprotocol.com/licenses/uim-by-nc-v1.0
 ```
 
 #### `agents.json` Files
@@ -515,7 +520,7 @@ Utilize the **Open Digital Rights Language (ODRL)** to define policies. A compre
 
 **Sample ODRL Policy** is provided in [Appendix C](#c-sample-odrl-policy).
 
-#### PAT Issuance Workflow
+#### PAT Issuance Workflow with ODRL policies
 
 1. **Policy Retrieval and Agreement**:
    - AI agent retrieves the ODRL policy from the specified endpoint.
@@ -569,7 +574,58 @@ Simplifies transactions by including billing details within the PAT.
 - Improved user experience.
 - Enhanced compliance.
 
-### 5.7 Service Management APIs
+### 5.7 Policy Adherence Tokens (PATs) and UIM Policy Scheme Integration
+
+#### Purpose
+
+The [UIM Licensing Scheme](uim-licensing-scheme.md) aims to standardize how licensing information is conveyed in the agents.json file, providing a clear, machine-readable format that AI agents can interpret to understand the legal and commercial restrictions around data usage. It simplifies the licensing process and offers web services a straightforward way to communicate their terms without the need to define a complete ODRL policy.
+
+#### PAT Issuance Workflow with UIM Licenses
+
+Web services can provide a custom license using the `uim-license` property, which allows them to define permissions, conditions, and restrictions in a simplified manner, tailored to their specific needs. AI agents can then interpret this license to understand the terms and conditions of data usage.
+
+When an AI agent interacts with a web service, it should first check for a `uim-license`. If both the uim-license property and an ODRL policy are specified, the ODRL policy takes precedence for defining permissions, prohibitions, and obligations.
+
+1. **License Retrieval and Agreement**:
+   - **AI Agent retrieves the UIM license** from the specified endpoint or resource metadata (e.g., `agents.json`).
+   - **AI Agent notes the license reference**, including:
+     - **License Code** (e.g., `UIM-BY-NC-v1.0`).
+     - **License URL** (e.g., `https://uimprotocol.com/licenses/uim-by-nc-v1.0`).
+   - **AI Agent prepares an authorization request** that refers directly to the license:
+     - **License Reference**: Includes the license URL.
+     - **Agreement Assertion**: Indicates agreement to comply with the entire license.
+     - **Digital Signature (Optional)**: May digitally sign the license reference to confirm agreement and authenticity.
+
+2. **PAT Issuance**:
+   - **Authorization Server evaluates the AI Agent's request**:
+     - **Verifies the license reference** is valid and recognized.
+     - **Confirms the agent's agreement** to comply with the license.
+     - **No need for detailed scopes and claims**: The license itself defines the permissions, conditions, and prohibitions.
+   - **Authorization Server issues a PAT**, which includes:
+     - **License Reference**: The license URL of the agreed-upon license.
+     - **Validity Period**: Specifies how long the PAT is valid.
+     - **Token Signature**: The PAT is digitally signed by the authorization server to ensure integrity and authenticity.
+
+3. **Using PAT in Requests**:
+   - **AI Agent includes the PAT** in the `Authorization` header of each request to the web service:
+  
+     ```http
+     Authorization: Bearer <PAT_token>
+     ```
+
+   - **Web Service verifies the PAT's signature and validity** before processing each request:
+     - **Validates the token's signature** to confirm it was issued by the trusted authorization server.
+     - **Checks the token's expiration** to ensure it is still valid.
+     - **Retrieves the license reference** from the PAT and verifies it is still valid and recognized. If not, the web service may reject the request.
+   - **Web Service processes the request** if the PAT is valid.
+
+**Notes**:
+
+- **Optional Digital Signature**: While not required in this flow, the agent may digitally sign the policy reference or the authorization request to provide an additional layer of assurance regarding the agent's identity and agreement.
+
+- **Dynamic Licenses**: If license are subject to change, the license reference should include a version number or timestamp to ensure both parties are referencing the same license terms.
+
+### 5.8 Service Management APIs
 
 APIs that allow web services to manage their registration, including creating, updating, and deleting services. Used in the centralized architecture.
 
@@ -610,7 +666,7 @@ APIs that allow web services to manage their registration, including creating, u
 - **Method**: `GET`
 - **Description**: Retrieves the details of a registered service.
 
-### 5.8 Intent Management APIs
+### 5.9 Intent Management APIs
 
 APIs for web services to manage their intents. Used in the centralized architecture.
 
@@ -872,7 +928,7 @@ GET /api/services/12345/intents?page=2&page_size=5
     },
     "notes": "Data is encrypted in transit and at rest."
   },
-  "uim-license": "CC-BY-NC-SA-4.0"
+  "uim-license": "https://uimprotocol.com/licenses/uim-by-nc-v1.0"
 }
 ```
 
